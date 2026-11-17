@@ -1,0 +1,4 @@
+# Applied migrations are immutable, including formatting.
+src/api/modules/**/database/migrations/**
+node_modules
+dist

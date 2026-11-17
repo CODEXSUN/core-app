@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-17",
+  "version": "0.1.0",
+  "moduleCount": 37,
+  "referenceRows": 348,
+  "totalMigrations": 40,
+  "unitToolTests": 7,
+  "postgresChecks": 45,
+  "typecheck": "passed",
+  "build": "warning-free",
+  "browser": {
+    "lists": 37,
+    "newCancel": [
+      "Country",
+      "State",
+      "Tax",
+      "Company",
+      "Contact",
+      "Default Company",
+      "Product"
+    ],
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "passed": [
+        "product create using Unit lookup",
+        "edit/save/reload",
+        "dirty browser Back and Stay"
+      ],
+      "viewportRestored": true
+    }
+  },
+  "billingChanged": false,
+  "productionDeployment": false,
+  "published": false,
+  "notes": "Module scope complete for local Billing integration. Production Platform identity, deployment and file-service uploads are separate."
+}

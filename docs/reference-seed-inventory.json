@@ -1,0 +1,157 @@
+[
+  {
+    "name": "country",
+    "records": 6,
+    "source": "common/location/country"
+  },
+  {
+    "name": "state",
+    "records": 37,
+    "source": "common/location/state"
+  },
+  {
+    "name": "district",
+    "records": 38,
+    "source": "common/location/district"
+  },
+  {
+    "name": "city",
+    "records": 22,
+    "source": "common/location/city"
+  },
+  {
+    "name": "pincode",
+    "records": 27,
+    "source": "common/location/pincode"
+  },
+  {
+    "name": "ledger-group",
+    "records": 1,
+    "source": "common/accounts/ledger-groups"
+  },
+  {
+    "name": "ledger",
+    "records": 1,
+    "source": "common/accounts/ledgers"
+  },
+  {
+    "name": "address-type",
+    "records": 3,
+    "source": "common/contacts/address-types"
+  },
+  {
+    "name": "bank-name",
+    "records": 157,
+    "source": "common/contacts/bank-names"
+  },
+  {
+    "name": "contact-group",
+    "records": 2,
+    "source": "common/contacts/contact-groups"
+  },
+  {
+    "name": "contact-type",
+    "records": 5,
+    "source": "common/contacts/contact-types"
+  },
+  {
+    "name": "currency",
+    "records": 2,
+    "source": "common/others/currencies"
+  },
+  {
+    "name": "month",
+    "records": 12,
+    "source": "common/others/months"
+  },
+  {
+    "name": "payment-term",
+    "records": 3,
+    "source": "common/others/payment-terms"
+  },
+  {
+    "name": "priority",
+    "records": 3,
+    "source": "common/others/priorities"
+  },
+  {
+    "name": "sales-type",
+    "records": 2,
+    "source": "common/others/sales-types"
+  },
+  {
+    "name": "brand",
+    "records": 1,
+    "source": "common/products/brands"
+  },
+  {
+    "name": "colour",
+    "records": 3,
+    "source": "common/products/colours"
+  },
+  {
+    "name": "hsn-code",
+    "records": 1,
+    "source": "common/products/hsn-codes"
+  },
+  {
+    "name": "product-category",
+    "records": 1,
+    "source": "common/products/product-categories"
+  },
+  {
+    "name": "product-group",
+    "records": 1,
+    "source": "common/products/product-groups"
+  },
+  {
+    "name": "product-type",
+    "records": 2,
+    "source": "common/products/product-types"
+  },
+  {
+    "name": "size",
+    "records": 1,
+    "source": "common/products/sizes"
+  },
+  {
+    "name": "style",
+    "records": 1,
+    "source": "common/products/styles"
+  },
+  {
+    "name": "tax",
+    "records": 4,
+    "source": "common/products/taxes"
+  },
+  {
+    "name": "unit",
+    "records": 6,
+    "source": "common/products/units"
+  },
+  {
+    "name": "destination",
+    "records": 1,
+    "source": "common/workorder/destinations"
+  },
+  {
+    "name": "stock-rejection-type",
+    "records": 2,
+    "source": "common/workorder/stock-rejection-types"
+  },
+  {
+    "name": "transport",
+    "records": 1,
+    "source": "common/workorder/transports"
+  },
+  {
+    "name": "warehouse",
+    "records": 1,
+    "source": "common/workorder/warehouses"
+  },
+  {
+    "name": "work-order-type",
+    "records": 1,
+    "source": "common/workorder/work-order-types"
+  }
+]

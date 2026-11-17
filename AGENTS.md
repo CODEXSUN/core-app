@@ -1,7 +1,10 @@
-# Repository agent instructions
+# Agent Instructions
 
-`apps/core-app` owns the core application.
+Read [Central Governance](../../mcp-governance/docs/governance.md) before work, then follow the relevant guides in its index.
 
-Read the shared [governance](../../assist/GOVERNANCE.md) and [agent guide](../../assist/AGENT.md) before working in this repository. Use the [shared documentation index](../../assist/GOVERNANCE.md#shared-documentation) to find relevant development rules, architecture, and available templates. Follow repository-specific instructions as well. Preserve existing work and report verification and limitations.
+- Work on one authorized step at a time and preserve others' work.
+- Reuse the shared framework and UI; do not copy their implementations.
+- Keep this app's completed work, next steps, decisions, and verification in `docs/work-record.md`.
+- Record only verified outcomes. Report failures and unfinished work plainly.
 
-Assist may be absent in a standalone checkout. If Assist is unavailable, state that limitation and do not assume its rules or server connections are present.
+These instructions apply to this repository. If the team moves it, update the central governance link before implementation. Follow higher-priority instructions and explicit user direction.
