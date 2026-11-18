@@ -45,13 +45,7 @@ export const legacyContactValuesSchema = z
               (value) => /^\d{7,15}$/.test(value.replace(/\D/g, "")),
               "Enter a valid phone number.",
             ),
-            phoneType: z.enum([
-              "Mobile",
-              "WhatsApp",
-              "Landline",
-              "Work",
-              "Other",
-            ]),
+            phoneType: text(80).min(1),
             isPrimary: z.boolean(),
           })
           .strict(),

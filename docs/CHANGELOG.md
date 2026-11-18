@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.2
+Current version: 0.1.3
 
-Release tag: v-0.1.2
+Release tag: v-0.1.3
 
-Changelog label: v 0.1.2
+Changelog label: v 0.1.3
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.3
+
+### [v 0.1.3] 2026-11-18 - Preserve legacy contact compatibility
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.3.
+- Preserve Home/custom phone types, root-only legacy phone/email records and normalized intake matching. Verified typecheck and 11 tests.
 
 ## v-0.1.2
 

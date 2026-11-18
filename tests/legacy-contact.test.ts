@@ -30,6 +30,7 @@ const values = {
 };
 test("legacy contact contract validates primary choices, mobile identity, exact amounts and protected fields", () => {
   assert.ok(legacyContactValuesSchema.safeParse(values).success);
+  assert.ok(legacyContactValuesSchema.safeParse({...values,phones:[...values.phones,{phone:'0801234567',phoneType:'Home',isPrimary:false}]}).success);
   for (const changed of [
     { ...values, createdBy: "forged" },
     { ...values, creditLimit: "1.001" },

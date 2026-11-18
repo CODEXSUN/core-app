@@ -72,13 +72,13 @@ export async function contactDetail(
     website: empty(row.website),
     description: empty(row.description),
     active: row.status === "active",
-    phones: phones.map((v) => ({
+    phones: (phones.length?phones:row.primary_phone?[{uuid:undefined,phone:row.primary_phone,phone_type:/^\d{10}$/.test(row.primary_phone)?'Mobile':'Other',is_primary:1}]:[]).map((v) => ({
       public_id: v.uuid,
       phone: v.phone,
       phoneType: v.phone_type,
       isPrimary: !!v.is_primary,
     })),
-    emails: emails.map((v) => ({
+    emails: (emails.length?emails:row.primary_email?[{uuid:undefined,email:row.primary_email,email_type:'Primary',is_primary:1}]:[]).map((v) => ({
       public_id: v.uuid,
       email: v.email,
       emailType: v.email_type,
@@ -321,8 +321,8 @@ export async function saveContact(
     if (
       (
         await tx.query(
-          `select p.id from core_contacts_emails p join core_contacts c on c.id=p.parent_id where lower(p.email)=? and c.uuid<>? and c.deleted_at is null`,
-          [row.email.toLowerCase(), publicId ?? ""],
+            `select c.id from core_contacts c left join core_contacts_emails p on p.parent_id=c.id where (lower(p.email)=? or lower(c.primary_email)=?) and c.uuid<>? and c.deleted_at is null`,
+            [row.email.toLowerCase(),row.email.toLowerCase(), publicId ?? ""],
         )
       ).length
     )

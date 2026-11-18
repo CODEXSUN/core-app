@@ -68,7 +68,7 @@ export function createLegacyContactPort(
           uuid: string;
           status: string;
         }>(
-          "select distinct c.id,c.uuid,c.status from core_contacts c left join core_contacts_phones p on p.parent_id=c.id where c.deleted_at is null and (p.phone=? or c.primary_phone=?)",
+          "select distinct c.id,c.uuid,c.status from core_contacts c left join core_contacts_phones p on p.parent_id=c.id where c.deleted_at is null and (regexp_replace(coalesce(p.phone,''),'[^0-9]','')=? or regexp_replace(coalesce(c.primary_phone,''),'[^0-9]','')=?)",
           [mobile, mobile],
         );
         if (matches.length > 1)

@@ -1,3 +1,7 @@
+## 2026-11-18 — CRM contact compatibility v-0.1.3
+
+Preserved source phone types and root-only phone/email values; normalized intake matching. Typecheck and 11 tests passed. No schema or existing-record changes.
+
 # Work Record
 
 ## 2026-11-18 — CRM legacy contact application port
