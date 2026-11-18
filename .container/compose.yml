@@ -1,0 +1,11 @@
+# Contract only. CodeShip renders the operational Compose file from its private registry.
+name: applications
+services:
+  core-app:
+    image: ${RELEASE_IMAGE:?CodeShip must supply the approved image digest}
+    pull_policy: always
+    init: true
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+# Private environment, loopback ports, networks and persistent volumes are operator-owned.

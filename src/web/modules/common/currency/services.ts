@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   Currency,
   CurrencyValues,
 } from "../../../../../contracts/currency";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/currencies" + path, {
+  const response = await appFetch("/api/v1/currencies" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

@@ -80,3 +80,29 @@ Created Test Company - Billing QA, active/current Test FY 2026-27 (2026-04-01 to
 Prepared the completed 37-module Core application, public APIs/client contracts, migrations, seeders, tests and current port-standard wiring for CODEXSUN/core-app. Retain application version 0.1.0; only Billing was requested as release v-1.0.3. Review private files and run checks before commit/push; verify publication against the remote. Local PostgreSQL data and credentials remain outside Git.
 
 Release validation passed: typecheck, frontend build, 7 unit/tool checks, 45 PostgreSQL checks, version consistency and private-file scan. Remote main was synchronized before publication.
+
+## 2026-11-17 — Consistent list header construction
+
+- Shared AppHeader now keeps actions at 32px inside a 40px rail, uses the Tasks hover/focus lift with reduced-motion support, and makes the current breadcrumb semibold. MainLayout defaults to workspace action alignment; gallery import actions explicitly retain edge alignment. Shared workspace-list-content aligns list/table right edges with the header.
+- Existing list shells and duplicate list headings were audited and adapted, including Billing financial lists, Codeship operations lists and Codeitz Todo Categories. UIUX live preview and typed usage use the shared content class. Governance and new-app template capture the construction rule. No Project Manager changes/builds.
+- Shared UI build, nine app typechecks/builds, 13 governance tests and two Master List tests passed. UIUX browser measured header 40px and New 32px with table outer-edge alignment. UIUX suite has 15 passes and one unrelated Login example parity failure from ongoing auth-template work; those auth files were preserved.
+
+- 2026-11-18: Opted this app into the shared one-time Silver rollout in provider and first-paint initialization; white/grey HTML fallback. Preserves mode, component defaults and subsequent Appearance choices. Shared UI source colour audit and representative UIUX screenshots verified; app typecheck and final production build passed. Project Manager excluded.
+
+## 2026-11-18 — Coordinated tagged deployment contract
+
+- Added the common .container build/Compose/delegation contract and pinned tagged release workflow. Shared SDK 0.1.2 is pinned to published commit 5f9f7b73ec8c01df698f2914676e83e9b1668d91; governance is available in the isolated CI source for setup audits. No local environment, database or credentials enter the build context.
+- Source verification and runtime/database adapter audit are recorded separately by CodeShip. Contract generation alone does not install, migrate or certify a deployment.
+
+## 2026-11-18 — Suite Platform authentication gate
+
+- Connected/reviewed core-app through the shared Platform browser/session and one-use service-grant pattern. Preserved business records, existing module work and concurrent release/UI changes. See Platform's auth-gate-rollout.md and this app's platform-auth.md for the exact data scope and limits.
+- Owning typecheck/build/tests/version checks passed. Native default-account login, tenant session, required password enforcement and logout were verified for newly connected apps; Texlinks' existing real verification was retained and its disposable two-tenant suite rerun. No real password change or database reset.
+- Core/Billing/Ecommerce/Automation preserve explicit Codexsun database bindings; Zetro uses its dedicated PostgreSQL/RLS boundary; CRM/HRMS/Texlinks do not claim implemented business data. Local app settings stay ignored. Production/deployment and fuller account lifecycle remain separate work.
+
+- Core public client now accepts an explicit delegated fetch transport without any fabricated static credential; its original token transport remains compatible. Focused transport tests and Core/Billing typechecks/tests passed.
+
+## 2026-11-18 — Audited source release handoff
+
+- Source typecheck/build and app/tool checks passed for the coordinated release, with restricted Docker database targets tested where needed. Dependency commits are published immutable versions. The user authorized including current app changes after audit.
+- Tagged workflow success, database copy/migration planning, runtime checks and Platform admission remain separate CodeShip stages; source publication alone does not certify deployment.

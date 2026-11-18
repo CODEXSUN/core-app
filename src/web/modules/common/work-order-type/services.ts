@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   WorkOrderType,
   WorkOrderTypeValues,
 } from "../../../../../contracts/work-order-type";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/work-order-types" + path, {
+  const response = await appFetch("/api/v1/work-order-types" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

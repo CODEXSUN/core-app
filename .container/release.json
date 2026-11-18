@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "name": "core-app",
+  "area": "apps",
+  "owner": "apps/core-app",
+  "repository": "CODEXSUN/core-app",
+  "baseImage": "node:26.13.1-bookworm-slim@sha256:5df79989ed685e09f0a98019db4cebfb22fb9df1a53c0161664a011f7ff6b0f1",
+  "dependencies": [
+    {
+      "path": "foundation/framework",
+      "repository": "CODEXSUN/framework",
+      "commit": "2d5c45e02855ab8553f403a728bd8ec0c3d84a95",
+      "sshSecret": "RELEASE_FRAMEWORK_KEY"
+    },
+    {
+      "path": "packages/ui",
+      "repository": "CODEXSUN/ui",
+      "commit": "fe898c0678bb8335a5825f42299458af69e8c1d6",
+      "sshSecret": "RELEASE_UI_KEY"
+    },
+    {
+      "path": "packages/sdk",
+      "repository": "CODEXSUN/sdk",
+      "commit": "a6d603d378aa172c5f04939a10776a97e8687420",
+      "sshSecret": "RELEASE_SDK_KEY"
+    },
+    {
+      "path": "mcp-governance",
+      "repository": "CODEXSUN/mcp-governance",
+      "commit": "fe3da41b523c717db7d5d30ade24c6d642dd8279",
+      "sshSecret": "RELEASE_GOVERNANCE_KEY"
+    }
+  ]
+}

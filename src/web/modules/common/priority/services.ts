@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   Priority,
   PriorityValues,
 } from "../../../../../contracts/priority";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/priorities" + path, {
+  const response = await appFetch("/api/v1/priorities" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

@@ -1,6 +1,6 @@
 {
   "name": "@workspace/core-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -41,7 +41,8 @@
     "pg": "8.23.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "zod": "^4.6.7"
+    "zod": "^4.6.7",
+    "@workspace/sdk": "file:../../packages/sdk"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.5",

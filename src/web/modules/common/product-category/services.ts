@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   ProductCategory,
   ProductCategoryValues,
 } from "../../../../../contracts/product-category";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/product-categories" + path, {
+  const response = await appFetch("/api/v1/product-categories" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

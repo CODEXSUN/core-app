@@ -1,6 +1,7 @@
+import {appFetch} from '../../../platform-client.ts';
 import type { Ledger, LedgerValues } from "../../../../../contracts/ledger";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/ledgers" + path, {
+  const response = await appFetch("/api/v1/ledgers" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

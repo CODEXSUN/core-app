@@ -1,3 +1,4 @@
+import {useWorkspaceAuth} from '../../platform';
 import {
   lazy,
   Suspense,
@@ -255,6 +256,7 @@ export function Application() {
   );
 }
 function Workspace() {
+ const identity=useWorkspaceAuth();
   const { path, navigate } = useNavigation();
   const [session, setSession] = useState<WorkspaceSession | null>(null);
   const [localAccess, setLocalAccess] = useState(false);
@@ -310,8 +312,8 @@ function Workspace() {
   return (
     <MainLayout
       className="w-full min-w-0"
-      applicationName="Core"
-      companyBrand={appBrand}
+      onLogout={()=>void identity?.logout()} applicationName="Core"
+      companyBrand={{...appBrand,name:identity?.session.tenant?.name??appBrand.name}}
       appItems={[]}
       navigation={[
         {
@@ -432,7 +434,7 @@ function Workspace() {
         },
       ]}
       user={{
-        name: session?.actorId ?? "Not connected",
+        name: identity?.session.user.displayName ?? "Not connected",
         email: "",
         fallback: "CO",
       }}
@@ -463,7 +465,7 @@ function Workspace() {
       statusLabel={session ? "Connected" : "Not connected"}
       versionLabel={"v " + appVersion}
     >
-      <main className="mx-auto w-full max-w-7xl space-y-5 p-6 sm:p-10">
+      <main className={module && tail.length === 1 ? "workspace-list-content space-y-5" : "mx-auto w-full max-w-7xl space-y-5 p-6 sm:p-10"}>
         <h1 className="sr-only">{label}</h1>
         <ContentBoundary resetKey={path}>
           <Suspense fallback={<AsyncState loading>{null}</AsyncState>}>

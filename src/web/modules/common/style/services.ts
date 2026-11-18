@@ -1,6 +1,7 @@
+import {appFetch} from '../../../platform-client.ts';
 import type { Style, StyleValues } from "../../../../../contracts/style";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/styles" + path, {
+  const response = await appFetch("/api/v1/styles" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

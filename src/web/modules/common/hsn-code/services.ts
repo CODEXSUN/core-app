@@ -1,6 +1,7 @@
+import {appFetch} from '../../../platform-client.ts';
 import type { HsnCode, HsnCodeValues } from "../../../../../contracts/hsn-code";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/hsn-codes" + path, {
+  const response = await appFetch("/api/v1/hsn-codes" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

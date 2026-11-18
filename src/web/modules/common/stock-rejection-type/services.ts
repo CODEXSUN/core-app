@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   StockRejectionType,
   StockRejectionTypeValues,
 } from "../../../../../contracts/stock-rejection-type";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/stock-rejection-types" + path, {
+  const response = await appFetch("/api/v1/stock-rejection-types" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

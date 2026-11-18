@@ -41,10 +41,10 @@ import type { OrganisationContext } from "./organisation-context.ts";
 export function createCoreClient({
   baseUrl,
   token,
-  fetcher = fetch,
+  fetcher,
 }: {
   baseUrl: string;
-  token: string;
+  token?: string;
   fetcher?: typeof fetch;
 }) {
   const base = new URL(baseUrl);
@@ -57,15 +57,15 @@ export function createCoreClient({
   ) {
     throw new Error("Use the Core server origin as baseUrl.");
   }
-  if (!token || token.length < 32)
+  if ((token === undefined && !fetcher) || (token !== undefined && token.length < 32))
     throw new Error("Configure a Core API access key.");
   async function read<T>(collection: string, publicId?: string): Promise<T> {
     if (publicId !== undefined && !/^[a-z0-9]{8}$/.test(publicId))
       throw new Error("Invalid Core public ID.");
-    const response = await fetcher(
+    const response = await (fetcher ?? fetch)(
       new URL("/api/v1/" + collection + (publicId ? "/" + publicId : ""), base),
       {
-        headers: { Authorization: "Bearer " + token },
+        headers: token ? { Authorization: "Bearer " + token } : {},
         signal: AbortSignal.timeout(5000),
         cache: "no-store",
       },

@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   FinancialYear,
   FinancialYearValues,
 } from "../../../../../contracts/financial-year";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/financial-years" + path, {
+  const response = await appFetch("/api/v1/financial-years" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

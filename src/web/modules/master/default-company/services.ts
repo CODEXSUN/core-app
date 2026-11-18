@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   DefaultCompany,
   DefaultCompanyValues,
 } from "../../../../../contracts/default-company";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/default-companies" + path, {
+  const response = await appFetch("/api/v1/default-companies" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

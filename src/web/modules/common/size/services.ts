@@ -1,6 +1,7 @@
+import {appFetch} from '../../../platform-client.ts';
 import type { Size, SizeValues } from "../../../../../contracts/size";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/sizes" + path, {
+  const response = await appFetch("/api/v1/sizes" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

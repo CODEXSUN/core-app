@@ -1,6 +1,7 @@
+import {appFetch} from '../../../platform-client.ts';
 import type { Unit, UnitValues } from "../../../../../contracts/unit";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/units" + path, {
+  const response = await appFetch("/api/v1/units" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

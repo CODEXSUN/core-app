@@ -1,3 +1,4 @@
+import {registerPlatformServiceInfo} from '@workspace/sdk/platform-application';
 import { createHttpServer, registerFrontend } from "@workspace/framework";
 import path from "node:path";
 import { readFileSync } from "node:fs";
@@ -34,6 +35,7 @@ export function createApplication(
   const manifest = JSON.parse(
     readFileSync(path.join(root, "package.json"), "utf8"),
   );
+  if(values.CORE_APP_PLATFORM_AUTH==='1')registerPlatformServiceInfo(app,{appKey:'core-app',version:manifest.version,databaseScope:'existing-tenant',tenantId:values.CORE_APP_PLATFORM_TENANT_ID});
   app.get("/api/openapi.json", async (request, reply) => {
     const context = await auth.resolveContext(request);
     if (!context)

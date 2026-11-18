@@ -2,6 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createCoreClient } from "../contracts/client.ts";
 
+test('a delegated Core transport needs no fabricated static credential',async()=>{
+ assert.throws(()=>createCoreClient({baseUrl:'http://127.0.0.1:4345'}),/access key/);
+ let headers:Headers|undefined;
+ const client=createCoreClient({baseUrl:'http://127.0.0.1:4345',fetcher:async(_url,options)=>{headers=new Headers(options?.headers);return Response.json([]);}});
+ assert.deepEqual(await client.listContacts(),[]);assert.equal(headers?.get('authorization'),null);
+});
+
 test("Billing read client uses server credentials, validates IDs and reports failures", async () => {
   const token = "test-only-key-".repeat(4);
   const requests: { url: string; authorization: string | null }[] = [];

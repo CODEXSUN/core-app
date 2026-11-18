@@ -1,9 +1,10 @@
+import {appFetch} from '../../../platform-client.ts';
 import type {
   ContactGroup,
   ContactGroupValues,
 } from "../../../../../contracts/contact-group";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/contact-groups" + path, {
+  const response = await appFetch("/api/v1/contact-groups" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

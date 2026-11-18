@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.0
+Current version: 0.1.1
 
-Release tag: v-0.1.0
+Release tag: v-0.1.1
 
-Changelog label: v 0.1.0
+Changelog label: v 0.1.1
 
 Application version remains 0.1.0. The completed Core implementation is being published to CODEXSUN/core-app; no Core release tag/version bump was requested.
+
+## v-0.1.1
+
+### [v 0.1.1] 2026-11-18 - Audited application work and pinned container release contract
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.1.
+- Include the current app-owned Platform authentication and business changes described in the work record. Add the common .container build/delegation contract and tagged image workflow, pinned to published UI 0.1.8, SDK 0.1.3 and governance source. Source typecheck/build and app/tool checks passed; CodeShip separately verifies image identity, database recovery and runtime admission. Existing data and public IDs are retained; no reset or seed is an update step.
 
 ## v-0.1.0
 

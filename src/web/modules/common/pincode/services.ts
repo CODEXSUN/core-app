@@ -1,6 +1,7 @@
+import {appFetch} from '../../../platform-client.ts';
 import type { Pincode, PincodeValues } from "../../../../../contracts/pincode";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch("/api/v1/pincodes" + path, {
+  const response = await appFetch("/api/v1/pincodes" + path, {
     ...init,
     credentials: "same-origin",
     cache: "no-store",

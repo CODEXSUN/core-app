@@ -3,6 +3,7 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { ContextResolver, ModuleContext } from "./database/context.ts";
 
 import { ownerPermissions } from "../../contracts/permissions.ts";
+import {platformAuthentication} from './platform-auth.ts';
 export { ownerPermissions };
 type Client = ModuleContext & { tokenHash: string };
 const cookieName = "core_app_session";
@@ -12,6 +13,7 @@ export function createAuthentication(
   host: string,
   port: number,
 ) {
+  if(values.CORE_APP_PLATFORM_AUTH==='1')return platformAuthentication(values);
   const local = values.CORE_APP_LOCAL_ACCESS === "true";
   if (
     local &&
