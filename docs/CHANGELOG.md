@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.1
+Current version: 0.1.2
 
-Release tag: v-0.1.1
+Release tag: v-0.1.2
 
-Changelog label: v 0.1.1
+Changelog label: v 0.1.2
 
-Application version remains 0.1.0. The completed Core implementation is being published to CODEXSUN/core-app; no Core release tag/version bump was requested.
+Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.2
+
+### [v 0.1.2] 2026-11-18 - Core-owned legacy contact application port
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.2.
+- Publish the Core-owned legacy contact host port and pure contact contracts for CRM Show/Create/Edit. Preserve source public/internal IDs and child ownership; validate fields, references, exact amounts, protected codes, duplicate identities and optimistic revisions. Core typecheck/build and eleven unit/tool tests passed; the CRM disposable legacy-schema suite verified persistence and rollback/access boundaries. No schema migration, seed or existing-record reset.
 
 ## v-0.1.1
 

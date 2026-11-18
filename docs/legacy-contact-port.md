@@ -1,0 +1,13 @@
+# Core-owned legacy contact port
+
+The user authorized CRM Show/Create/Edit using existing Codexsun records on 18 November 2026. Contacts remain Core-owned. The public server-only `@workspace/core-app/legacy-contact` export supplies that domain's compatibility application port; CRM never writes Core contact tables itself. Browser code imports only the pure `@workspace/core-app/contracts/legacy-contact` schema/types.
+
+The host must provide a verified tenant-bound SQL transaction, a server-resolved active legacy actor and an exact per-operation authorization callback. Core checks the expected tenant and calls authorization for every read/create/update. CRM's host adapter uses its request-bound Platform context and exact crm/contact:read/create/update grants. This is an explicitly host-callable application interface, not permission to import Core's private repositories or to trust caller-supplied browser identity.
+
+Core owns root/contact-child queries, validation, reference/location consistency, protected default/external codes, normalized duplicate phone/email detection, decimal money strings, eight-character public IDs, optimistic revision checks and parent ownership of child UUIDs. Updates retain existing root IDs, child IDs, public IDs, creator metadata and unrelated fields; related entries are removed only when the submitted full contact edit explicitly removes them. No root delete operation exists. Inactive historical references can remain unchanged but cannot be newly selected.
+
+The intake operation reuses a unique existing mobile or creates a Customer master under explicit contact-create permission. Like the reference intake, a name-only customer can be incomplete; the full contact editor still requires a Mobile/WhatsApp number. Explicit edits preserve all email, phone, address, bank and social-link arrays. External sync, attachments and separate contact-360 modules are not enabled by this port.
+
+This adapts an existing MariaDB schema without creating or rewriting it. Ordinary Core PostgreSQL APIs/data and Core's installed runtime are unchanged. The new export is published as an immutable dependency used in CRM's release image, rather than depending on an editable sibling checkout at deployment time. Future schema changes still require the owning module's reviewed migration/adoption contract.
+
+Verification: Core typecheck/build and eleven unit/tool tests passed. The CRM disposable MariaDB schema suite exercised real create/show/edit SQL, child-ID preservation, cross-parent rejection/rollback, duplicate contact rejection, stale revisions and permission/tenant boundaries. Fixture SQL contains empty schema definitions only; no real user/customer data or password hashes are included.

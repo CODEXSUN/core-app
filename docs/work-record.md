@@ -1,5 +1,11 @@
 # Work Record
 
+## 2026-11-18 — CRM legacy contact application port
+
+- User authorized complete CRM contact/enquiry/task Show/Create/Edit against existing Codexsun records and a tagged local deployment. Added the public Core-owned legacy-contact host port and pure validation/types contract so contact writes remain with Core. Existing PostgreSQL APIs/runtime/data are unchanged; no schema migration or seed runs.
+- Full contact root fields, phone/email/address/bank/social values, exact decimal strings, reference hierarchy, protected records/codes, normalized identities, parent-owned child UUIDs and stale-write rejection are implemented. Host transactions and verified actor/tenant/operation callbacks are required. See legacy-contact-port.md.
+- Core typecheck/build and eleven unit/tool tests passed; CRM's disposable legacy-schema integration exercised real persistence and rejection/rollback boundaries. No real source records were changed by verification. Release source excludes unrelated recovery documentation work preserved separately.
+
 ## Goal
 
 Shared company, financial year and contact master data for business apps
