@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   ProductGroup,
@@ -34,3 +36,6 @@ export function saveProductGroup(
     },
   );
 }
+
+export function loadProductGroupReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<ProductGroup,'public_id'|'name'|'active'>>>{return loadReferencePage('product-groups',query,signal);}
+export function getProductGroupReference(id:string,signal?:AbortSignal):Promise<Pick<ProductGroup,'public_id'|'name'|'active'>>{return loadSelectedReference('product-groups',id,signal);}

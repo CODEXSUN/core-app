@@ -1,0 +1,544 @@
+{
+  "uiVersion": "0.1.13",
+  "uiCommit": "984a9d2afd4dcfdc80bd1f940c9a94cb0dff298b",
+  "widths": [
+    {
+      "viewport": 360,
+      "document": 360,
+      "dialog": 328
+    },
+    {
+      "viewport": 768,
+      "document": 768,
+      "dialog": 736
+    },
+    {
+      "viewport": 1440,
+      "document": 1440,
+      "dialog": 896
+    }
+  ],
+  "checks": [
+    "New Product makes zero eager reference requests; modal search reaches record5000 with25-row bounded page; selection label resolves.",
+    "Edit Product displays verified inactive historical selection singly; inactive record absent from active search.",
+    "New Contact is on-demand; page2 selection retains off-page label.",
+    "Product required schema blocks empty save; selected Unit/Brand IDs reach unchanged onSave callback (memory-only fixture, no live business write). Superseded slow search aborts and cannot replace latest rows.",
+    "403 remains explicit without auth loop;503 clears rows and manual retry recovers.",
+    "Unmount cancels pending reference search debounce.",
+    "New Company plus added address/bank rows makes zero eager catalogue requests; child is disabled until its parent; Bank reference loads and selects on demand.",
+    "Edit Company country changes clear old child IDs, cancel delayed selected-State work and prevent a delayed prior-country child page from replacing the latest exact scope."
+  ],
+  "requests": [
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "05000",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 1,
+      "bytes": 111,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "r0005000",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 67,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "05000",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 1,
+      "bytes": 111,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "r0005000",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 67,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "05000",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 1,
+      "bytes": 111,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "r0005000",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 67,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "r0004999",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 68,
+      "aborted": false
+    },
+    {
+      "collection": "product-categories",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 72,
+      "aborted": false
+    },
+    {
+      "collection": "product-groups",
+      "target": "r0000002",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 68,
+      "aborted": false
+    },
+    {
+      "collection": "hsn-codes",
+      "target": "r0000003",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 63,
+      "aborted": false
+    },
+    {
+      "collection": "units",
+      "target": "r0000004",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 59,
+      "aborted": false
+    },
+    {
+      "collection": "taxes",
+      "target": "r0000005",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 59,
+      "aborted": false
+    },
+    {
+      "collection": "brands",
+      "target": "r0000006",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 60,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "04999",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 44,
+      "aborted": false
+    },
+    {
+      "collection": "contact-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "contact-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 2,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "contact-types",
+      "target": "r0000026",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 67,
+      "aborted": false
+    },
+    {
+      "collection": "units",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1546,
+      "aborted": false
+    },
+    {
+      "collection": "units",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 59,
+      "aborted": false
+    },
+    {
+      "collection": "brands",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1571,
+      "aborted": false
+    },
+    {
+      "collection": "brands",
+      "target": "page",
+      "q": "slow",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 44,
+      "aborted": true
+    },
+    {
+      "collection": "brands",
+      "target": "page",
+      "q": "05000",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 1,
+      "bytes": 104,
+      "aborted": false
+    },
+    {
+      "collection": "brands",
+      "target": "r0005000",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 60,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1746,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "forbidden",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 0,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "fail-once",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 0,
+      "aborted": false
+    },
+    {
+      "collection": "product-types",
+      "target": "page",
+      "q": "fail-once",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 44,
+      "aborted": false
+    },
+    {
+      "collection": "bank-names",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1671,
+      "aborted": false
+    },
+    {
+      "collection": "bank-names",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 64,
+      "aborted": false
+    },
+    {
+      "collection": "countries",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 63,
+      "aborted": false
+    },
+    {
+      "collection": "states",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 83,
+      "aborted": true
+    },
+    {
+      "collection": "districts",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 84,
+      "aborted": false
+    },
+    {
+      "collection": "cities",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 84,
+      "aborted": false
+    },
+    {
+      "collection": "pincodes",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 82,
+      "aborted": false
+    },
+    {
+      "collection": "bank-names",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 64,
+      "aborted": false
+    },
+    {
+      "collection": "countries",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1646,
+      "aborted": false
+    },
+    {
+      "collection": "countries",
+      "target": "r0000002",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 63,
+      "aborted": false
+    },
+    {
+      "collection": "states",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {
+        "countryId": "r0000002"
+      },
+      "count": 25,
+      "bytes": 2146,
+      "aborted": true
+    },
+    {
+      "collection": "countries",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 25,
+      "bytes": 1646,
+      "aborted": false
+    },
+    {
+      "collection": "countries",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 63,
+      "aborted": false
+    },
+    {
+      "collection": "states",
+      "target": "page",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {
+        "countryId": "r0000001"
+      },
+      "count": 25,
+      "bytes": 2146,
+      "aborted": false
+    },
+    {
+      "collection": "states",
+      "target": "r0000001",
+      "q": "",
+      "size": 25,
+      "page": 1,
+      "references": {},
+      "count": 0,
+      "bytes": 83,
+      "aborted": false
+    }
+  ],
+  "maxReferencePageBytes": 2146
+}

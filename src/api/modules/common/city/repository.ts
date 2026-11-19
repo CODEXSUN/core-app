@@ -168,6 +168,6 @@ export async function updateCity(
 }
 
 export async function pageCityRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
- const result=await pageModuleRecords(db,query(db).where('cities.tenant_id','=',context.tenantId).where('cities.deleted_at','is',null),input,{"name":{"field":"name"},"districtId":{"field":"districtName"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ const result=await pageModuleRecords(db,query(db).where('cities.tenant_id','=',context.tenantId).where('cities.deleted_at','is',null),input,{"name":{"field":"name"},"districtId":{"field":"districtName","referenceField":"districtId"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
  return result;
 }

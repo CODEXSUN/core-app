@@ -2,12 +2,14 @@ import{sql,type Kysely,type SelectQueryBuilder}from'kysely';
 import{modulePageQuerySchema,type ModulePage}from'../../../contracts/module-page.ts';
 import{z}from'zod';
 import{ModulePageSizeError}from'../http.ts';
-export type ModulePageColumns=Readonly<Record<string,{field:string;boolean?:boolean}>>;
+export type ModulePageColumns=Readonly<Record<string,{field:string;boolean?:boolean;referenceField?:string}>>;
 /** Pagination only: the owning repository supplies its already tenant/lifecycle-scoped query and explicit displayed-column allowlist. */
 export async function pageModuleRecords<Row extends Record<string,unknown>>(db:Kysely<any>,scoped:SelectQueryBuilder<any,any,Row>,input:unknown,columns:ModulePageColumns):Promise<ModulePage<Record<string,unknown>>>{
  const options=modulePageQuerySchema.parse(input),sort=options.sort??'name';
  const allowed=z.enum(Object.keys(columns) as [string,...string[]]);allowed.parse(sort);for(const field of Object.keys(options.filters))allowed.parse(field);
+ for(const field of Object.keys(options.references))if(!columns[field]?.referenceField)z.never().parse(field);
  let selected=db.selectFrom(scoped.as('page_records'));
+ for(const[field,value]of Object.entries(options.references))selected=selected.where(sql<boolean>`${sql.ref('page_records.'+columns[field].referenceField!)} = ${value}`);
  const text=(key:string)=>{const field=sql.ref('page_records.'+columns[key].field);return columns[key].boolean?sql<string>`CASE WHEN ${field} THEN 'Yes' ELSE 'No' END`:sql<string>`COALESCE(CAST(${field} AS text),'')`;};
  const pattern=(value:string)=>'%'+value.replace(/[\\%_]/g,part=>'\\'+part)+'%';
  if(options.q)selected=selected.where(eb=>eb.or(Object.keys(columns).map(key=>sql<boolean>`${text(key)} ILIKE ${pattern(options.q)}`)));

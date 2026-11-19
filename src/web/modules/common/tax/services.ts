@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type { Tax, TaxValues } from "../../../../../contracts/tax";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -25,3 +27,6 @@ export function saveTax(values: TaxValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadTaxReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<Tax,'public_id'|'name'|'active'>>>{return loadReferencePage('taxes',query,signal);}
+export function getTaxReference(id:string,signal?:AbortSignal):Promise<Pick<Tax,'public_id'|'name'|'active'>>{return loadSelectedReference('taxes',id,signal);}

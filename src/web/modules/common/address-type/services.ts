@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   AddressType,
@@ -31,3 +33,6 @@ export function saveAddressType(values: AddressTypeValues, publicId?: string) {
     },
   );
 }
+
+export function loadAddressTypeReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<AddressType,'public_id'|'name'|'active'>>>{return loadReferencePage('address-types',query,signal);}
+export function getAddressTypeReference(id:string,signal?:AbortSignal):Promise<Pick<AddressType,'public_id'|'name'|'active'>>{return loadSelectedReference('address-types',id,signal);}

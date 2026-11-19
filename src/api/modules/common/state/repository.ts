@@ -170,6 +170,6 @@ export async function updateState(
 }
 
 export async function pageStateRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
- const result=await pageModuleRecords(db,query(db).where('states.tenant_id','=',context.tenantId).where('states.deleted_at','is',null),input,{"name":{"field":"name"},"countryId":{"field":"countryName"},"code":{"field":"code"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ const result=await pageModuleRecords(db,query(db).where('states.tenant_id','=',context.tenantId).where('states.deleted_at','is',null),input,{"name":{"field":"name"},"countryId":{"field":"countryName","referenceField":"countryId"},"code":{"field":"code"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
  return result;
 }

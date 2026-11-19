@@ -1,3 +1,5 @@
+import{modulePageQuerySchema}from'../../../../../contracts/module-page.ts';
+import{resolveCityReference}from'../city/index.ts';
 import {pagePincodeRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
@@ -17,7 +19,7 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createPincodeService(db: Kysely<Database>) {
   return {
-    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/pincode:read');return pagePincodeRecords(db,context,input);},
+    async page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/pincode:read');const value=modulePageQuerySchema.parse(input),refs=z.object({cityId:idSchema.optional()}).strict().parse(value.references);if(refs.cityId)await resolveCityReference(db,context,refs.cityId);return pagePincodeRecords(db,context,value);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/pincode:read");
       return listPincode(db, context);

@@ -6,7 +6,7 @@ import {
   UpsertFormSection,
   UpsertFormValidationSummary,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from "../../shared/reference-picker";
 import { FormSelect } from "@workspace/ui/blocks/form-controls/select";
 import { FormDatePicker } from "@workspace/ui/blocks/form-controls/date-picker";
 import { useUnsavedChangesGuard } from "@workspace/ui/blocks/unsaved-changes-guard";
@@ -16,13 +16,13 @@ import {
   type ProductValues,
 } from "../../../../../contracts/product";
 import { useNavigation } from "../../../navigation";
-import { loadProductType } from "../../common/product-type";
-import { loadProductCategory } from "../../common/product-category";
-import { loadProductGroup } from "../../common/product-group";
-import { loadHsnCode } from "../../common/hsn-code";
-import { loadUnit } from "../../common/unit";
-import { loadTax } from "../../common/tax";
-import { loadBrand } from "../../common/brand";
+import {loadProductTypeReferencePage,getProductTypeReference} from "../../common/product-type";
+import {loadProductCategoryReferencePage,getProductCategoryReference} from "../../common/product-category";
+import {loadProductGroupReferencePage,getProductGroupReference} from "../../common/product-group";
+import {loadHsnCodeReferencePage,getHsnCodeReference} from "../../common/hsn-code";
+import {loadUnitReferencePage,getUnitReference} from "../../common/unit";
+import {loadTaxReferencePage,getTaxReference} from "../../common/tax";
+import {loadBrandReferencePage,getBrandReference} from "../../common/brand";
 
 type Props = {
   id: string;
@@ -67,11 +67,6 @@ export function ProductForm({
   const [values, setValues] = useState(initial.current);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [lookups, setLookups] = useState<
-    Record<string, { value: string; label: string }[]>
-  >({});
-  const [lookupError, setLookupError] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(true);
   const pending = useRef(false);
   const { setGuard } = useNavigation();
   const guard = useUnsavedChangesGuard({
@@ -86,114 +81,7 @@ export function ProductForm({
     );
     return () => setGuard(null);
   }, [values, saving, guard.requestNavigation, setGuard]);
-  useEffect(() => {
-    let active = true;
-    Promise.all([
-      loadProductType(),
-      loadProductCategory(),
-      loadProductGroup(),
-      loadHsnCode(),
-      loadUnit(),
-      loadTax(),
-      loadBrand(),
-    ])
-      .then(
-        ([
-          typeIdRecords,
-          productCategoryIdRecords,
-          productGroupIdRecords,
-          hsnCodeIdRecords,
-          unitIdRecords,
-          taxIdRecords,
-          brandIdRecords,
-        ]) => {
-          if (active)
-            setLookups({
-              typeId: typeIdRecords
-                .filter(
-                  (record) =>
-                    record.active ||
-                    record.public_id === initial.current.typeId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-              productCategoryId: productCategoryIdRecords
-                .filter(
-                  (record) =>
-                    record.active ||
-                    record.public_id === initial.current.productCategoryId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-              productGroupId: productGroupIdRecords
-                .filter(
-                  (record) =>
-                    record.active ||
-                    record.public_id === initial.current.productGroupId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-              hsnCodeId: hsnCodeIdRecords
-                .filter(
-                  (record) =>
-                    record.active ||
-                    record.public_id === initial.current.hsnCodeId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-              unitId: unitIdRecords
-                .filter(
-                  (record) =>
-                    record.active ||
-                    record.public_id === initial.current.unitId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-              taxId: taxIdRecords
-                .filter(
-                  (record) =>
-                    record.active || record.public_id === initial.current.taxId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-              brandId: brandIdRecords
-                .filter(
-                  (record) =>
-                    record.active ||
-                    record.public_id === initial.current.brandId,
-                )
-                .map((record) => ({
-                  value: record.public_id,
-                  label: record.name,
-                })),
-            });
-        },
-      )
-      .catch(() => {
-        if (active)
-          setLookupError(
-            "Unable to load reference choices. Check access or reload this form.",
-          );
-      })
-      .finally(() => {
-        if (active) setLookupLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+
   return (
     <>
       {guard.dialog}
@@ -202,14 +90,10 @@ export function ProductForm({
         id={id}
         noValidate
         saving={saving}
-        error={error || lookupError}
+        error={error}
         onSubmit={async (event) => {
           event.preventDefault();
           if (pending.current || saving) return;
-          if (lookupLoading || lookupError) {
-            setError(lookupError || "Wait for reference choices to load.");
-            return;
-          }
           const parsed = productValuesSchema.safeParse(values);
           setErrors({});
           setError("");
@@ -265,14 +149,12 @@ export function ProductForm({
             helper="Choose an authorized record."
             error={errors.typeId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Product type"
               value={values.typeId}
-              options={lookups.typeId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, typeId: value }))
-              }
+              loadPage={loadProductTypeReferencePage}
+              loadSelected={getProductTypeReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,typeId:value}));setErrors(previous=>{const next={...previous};delete next.typeId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -282,17 +164,12 @@ export function ProductForm({
             helper="Choose an authorized record."
             error={errors.productCategoryId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Category"
               value={values.productCategoryId}
-              options={lookups.productCategoryId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({
-                  ...previous,
-                  productCategoryId: value,
-                }))
-              }
+              loadPage={loadProductCategoryReferencePage}
+              loadSelected={getProductCategoryReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,productCategoryId:value}));setErrors(previous=>{const next={...previous};delete next.productCategoryId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -302,17 +179,12 @@ export function ProductForm({
             helper="Choose an authorized record."
             error={errors.productGroupId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Group"
               value={values.productGroupId}
-              options={lookups.productGroupId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({
-                  ...previous,
-                  productGroupId: value,
-                }))
-              }
+              loadPage={loadProductGroupReferencePage}
+              loadSelected={getProductGroupReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,productGroupId:value}));setErrors(previous=>{const next={...previous};delete next.productGroupId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -322,14 +194,12 @@ export function ProductForm({
             helper="Choose an authorized record."
             error={errors.hsnCodeId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="HSN code"
               value={values.hsnCodeId}
-              options={lookups.hsnCodeId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, hsnCodeId: value }))
-              }
+              loadPage={loadHsnCodeReferencePage}
+              loadSelected={getHsnCodeReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,hsnCodeId:value}));setErrors(previous=>{const next={...previous};delete next.hsnCodeId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -340,14 +210,12 @@ export function ProductForm({
             error={errors.unitId}
             required
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Unit"
               value={values.unitId}
-              options={lookups.unitId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, unitId: value }))
-              }
+              loadPage={loadUnitReferencePage}
+              loadSelected={getUnitReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,unitId:value}));setErrors(previous=>{const next={...previous};delete next.unitId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -357,14 +225,12 @@ export function ProductForm({
             helper="Choose an authorized record."
             error={errors.taxId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Tax"
               value={values.taxId}
-              options={lookups.taxId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, taxId: value }))
-              }
+              loadPage={loadTaxReferencePage}
+              loadSelected={getTaxReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,taxId:value}));setErrors(previous=>{const next={...previous};delete next.taxId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -374,14 +240,12 @@ export function ProductForm({
             helper="Choose an authorized record."
             error={errors.brandId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Brand"
               value={values.brandId}
-              options={lookups.brandId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, brandId: value }))
-              }
+              loadPage={loadBrandReferencePage}
+              loadSelected={getBrandReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,brandId:value}));setErrors(previous=>{const next={...previous};delete next.brandId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField

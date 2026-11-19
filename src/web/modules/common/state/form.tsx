@@ -6,7 +6,7 @@ import {
   UpsertFormSection,
   UpsertFormValidationSummary,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from "../../shared/reference-picker";
 import { FormSelect } from "@workspace/ui/blocks/form-controls/select";
 import { FormDatePicker } from "@workspace/ui/blocks/form-controls/date-picker";
 import { useUnsavedChangesGuard } from "@workspace/ui/blocks/unsaved-changes-guard";
@@ -16,7 +16,7 @@ import {
   type StateValues,
 } from "../../../../../contracts/state";
 import { useNavigation } from "../../../navigation";
-import { loadCountry } from "../../common/country";
+import {loadCountryReferencePage,getCountryReference} from "../../common/country";
 
 type Props = {
   id: string;
@@ -54,11 +54,6 @@ export function StateForm({
   const [values, setValues] = useState(initial.current);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [lookups, setLookups] = useState<
-    Record<string, { value: string; label: string }[]>
-  >({});
-  const [lookupError, setLookupError] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(true);
   const pending = useRef(false);
   const { setGuard } = useNavigation();
   const guard = useUnsavedChangesGuard({
@@ -73,37 +68,7 @@ export function StateForm({
     );
     return () => setGuard(null);
   }, [values, saving, guard.requestNavigation, setGuard]);
-  useEffect(() => {
-    let active = true;
-    Promise.all([loadCountry()])
-      .then(([countryIdRecords]) => {
-        if (active)
-          setLookups({
-            countryId: countryIdRecords
-              .filter(
-                (record) =>
-                  record.active ||
-                  record.public_id === initial.current.countryId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-          });
-      })
-      .catch(() => {
-        if (active)
-          setLookupError(
-            "Unable to load reference choices. Check access or reload this form.",
-          );
-      })
-      .finally(() => {
-        if (active) setLookupLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+
   return (
     <>
       {guard.dialog}
@@ -112,14 +77,10 @@ export function StateForm({
         id={id}
         noValidate
         saving={saving}
-        error={error || lookupError}
+        error={error}
         onSubmit={async (event) => {
           event.preventDefault();
           if (pending.current || saving) return;
-          if (lookupLoading || lookupError) {
-            setError(lookupError || "Wait for reference choices to load.");
-            return;
-          }
           const parsed = stateValuesSchema.safeParse(values);
           setErrors({});
           setError("");
@@ -176,14 +137,12 @@ export function StateForm({
             error={errors.countryId}
             required
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Country"
               value={values.countryId}
-              options={lookups.countryId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, countryId: value }))
-              }
+              loadPage={loadCountryReferencePage}
+              loadSelected={getCountryReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,countryId:value}));setErrors(previous=>{const next={...previous};delete next.countryId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField

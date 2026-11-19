@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   ContactType,
@@ -31,3 +33,6 @@ export function saveContactType(values: ContactTypeValues, publicId?: string) {
     },
   );
 }
+
+export function loadContactTypeReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<ContactType,'public_id'|'name'|'active'>>>{return loadReferencePage('contact-types',query,signal);}
+export function getContactTypeReference(id:string,signal?:AbortSignal):Promise<Pick<ContactType,'public_id'|'name'|'active'>>{return loadSelectedReference('contact-types',id,signal);}

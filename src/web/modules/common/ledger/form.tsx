@@ -6,7 +6,7 @@ import {
   UpsertFormSection,
   UpsertFormValidationSummary,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from "../../shared/reference-picker";
 import { FormSelect } from "@workspace/ui/blocks/form-controls/select";
 import { FormDatePicker } from "@workspace/ui/blocks/form-controls/date-picker";
 import { useUnsavedChangesGuard } from "@workspace/ui/blocks/unsaved-changes-guard";
@@ -16,7 +16,7 @@ import {
   type LedgerValues,
 } from "../../../../../contracts/ledger";
 import { useNavigation } from "../../../navigation";
-import { loadLedgerGroup } from "../../common/ledger-group";
+import {loadLedgerGroupReferencePage,getLedgerGroupReference} from "../../common/ledger-group";
 
 type Props = {
   id: string;
@@ -53,11 +53,6 @@ export function LedgerForm({
   const [values, setValues] = useState(initial.current);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [lookups, setLookups] = useState<
-    Record<string, { value: string; label: string }[]>
-  >({});
-  const [lookupError, setLookupError] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(true);
   const pending = useRef(false);
   const { setGuard } = useNavigation();
   const guard = useUnsavedChangesGuard({
@@ -72,37 +67,7 @@ export function LedgerForm({
     );
     return () => setGuard(null);
   }, [values, saving, guard.requestNavigation, setGuard]);
-  useEffect(() => {
-    let active = true;
-    Promise.all([loadLedgerGroup()])
-      .then(([ledgerGroupIdRecords]) => {
-        if (active)
-          setLookups({
-            ledgerGroupId: ledgerGroupIdRecords
-              .filter(
-                (record) =>
-                  record.active ||
-                  record.public_id === initial.current.ledgerGroupId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-          });
-      })
-      .catch(() => {
-        if (active)
-          setLookupError(
-            "Unable to load reference choices. Check access or reload this form.",
-          );
-      })
-      .finally(() => {
-        if (active) setLookupLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+
   return (
     <>
       {guard.dialog}
@@ -111,14 +76,10 @@ export function LedgerForm({
         id={id}
         noValidate
         saving={saving}
-        error={error || lookupError}
+        error={error}
         onSubmit={async (event) => {
           event.preventDefault();
           if (pending.current || saving) return;
-          if (lookupLoading || lookupError) {
-            setError(lookupError || "Wait for reference choices to load.");
-            return;
-          }
           const parsed = ledgerValuesSchema.safeParse(values);
           setErrors({});
           setError("");
@@ -175,14 +136,12 @@ export function LedgerForm({
             error={errors.ledgerGroupId}
             required
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Ledger group"
               value={values.ledgerGroupId}
-              options={lookups.ledgerGroupId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, ledgerGroupId: value }))
-              }
+              loadPage={loadLedgerGroupReferencePage}
+              loadSelected={getLedgerGroupReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,ledgerGroupId:value}));setErrors(previous=>{const next={...previous};delete next.ledgerGroupId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField

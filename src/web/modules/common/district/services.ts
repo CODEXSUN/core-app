@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   District,
@@ -28,3 +30,6 @@ export function saveDistrict(values: DistrictValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadDistrictReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal,references?:{stateId?:string}):Promise<ReferencePage<Pick<District,'public_id'|'name'|'active'>>>{return loadReferencePage('districts',query,signal,references as Readonly<Record<string,string>>|undefined);}
+export function getDistrictReference(id:string,signal?:AbortSignal):Promise<Pick<District,'public_id'|'name'|'active'>>{return loadSelectedReference('districts',id,signal);}

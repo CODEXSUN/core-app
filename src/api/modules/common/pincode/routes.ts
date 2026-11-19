@@ -105,7 +105,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const pincodeOpenApiPaths = {
-  '/api/v1/pincodes/page':{get:modulePageOpenApi('pincodePage',["name","cityId","area","sortOrder","active"])},
+  '/api/v1/pincodes/page':{get:modulePageOpenApi('pincodePage',["name","cityId","area","sortOrder","active"],['cityId'])},
   "/api/v1/pincodes": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

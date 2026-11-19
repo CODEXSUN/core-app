@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   ProductType,
@@ -31,3 +33,6 @@ export function saveProductType(values: ProductTypeValues, publicId?: string) {
     },
   );
 }
+
+export function loadProductTypeReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<ProductType,'public_id'|'name'|'active'>>>{return loadReferencePage('product-types',query,signal);}
+export function getProductTypeReference(id:string,signal?:AbortSignal):Promise<Pick<ProductType,'public_id'|'name'|'active'>>{return loadSelectedReference('product-types',id,signal);}

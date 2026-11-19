@@ -2,13 +2,28 @@
 
 ## Version State
 
-Current version: 0.1.6
+Current version: 0.1.7
 
-Release tag: v-0.1.6
+Release tag: v-0.1.7
 
-Changelog label: v 0.1.6
+Changelog label: v 0.1.7
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.7
+
+### [v 0.1.7] 2026-11-19 - Bound form reference choices and preserve exact address cascades
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.7.
+- Replace eager relationship catalogue reads with bounded on-demand pickers; preserve inactive selected labels, permissions and write validation.
+- Add exact owner-scoped parent-ID constraints before address page totals; cancel stale requests on parent changes.
+- Verify 32 unit/tool tests, 49 PostgreSQL checks and frozen-package browser forms at 360/768/1440; no migration.
 
 ## v-0.1.6
 

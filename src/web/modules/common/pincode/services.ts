@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type { Pincode, PincodeValues } from "../../../../../contracts/pincode";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -25,3 +27,6 @@ export function savePincode(values: PincodeValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadPincodeReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal,references?:{cityId?:string}):Promise<ReferencePage<Pick<Pincode,'public_id'|'name'|'active'>>>{return loadReferencePage('pincodes',query,signal,references);}
+export function getPincodeReference(id:string,signal?:AbortSignal):Promise<Pick<Pincode,'public_id'|'name'|'active'>>{return loadSelectedReference('pincodes',id,signal);}

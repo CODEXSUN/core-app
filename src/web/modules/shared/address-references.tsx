@@ -1,23 +1,14 @@
-import { useEffect, useState } from "react";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import { useCallback } from "react";
+import type { MasterListRemoteQuery } from "@workspace/ui/blocks/data-table";
 import { UpsertFormField } from "@workspace/ui/blocks/upsert-form";
 import type { Address } from "../../../../contracts/party";
-import { loadCountry } from "../common/country";
-import { loadState } from "../common/state";
-import { loadDistrict } from "../common/district";
-import { loadCity } from "../common/city";
-import { loadPincode } from "../common/pincode";
-import { loadAddressType } from "../common/address-type";
-
-type Choice = {
-  public_id: string;
-  name: string;
-  active: boolean;
-  countryId?: string;
-  stateId?: string;
-  districtId?: string;
-  cityId?: string;
-};
+import { loadCountryReferencePage, getCountryReference } from "../common/country";
+import { loadStateReferencePage, getState } from "../common/state";
+import { loadDistrictReferencePage, getDistrict } from "../common/district";
+import { loadCityReferencePage, getCity } from "../common/city";
+import { loadPincodeReferencePage, getPincode } from "../common/pincode";
+import { loadAddressTypeReferencePage, getAddressTypeReference } from "../common/address-type";
+import { ReferencePicker } from "./reference-picker";
 export function AddressReferences({
   id,
   index,
@@ -29,63 +20,50 @@ export function AddressReferences({
   address: Address;
   onChange: (patch: Partial<Address>) => void;
 }) {
-  const [choices, setChoices] = useState<{
-    countries: Choice[];
-    states: Choice[];
-    districts: Choice[];
-    cities: Choice[];
-    pincodes: Choice[];
-    types: Choice[];
-  }>({
-    countries: [],
-    states: [],
-    districts: [],
-    cities: [],
-    pincodes: [],
-    types: [],
-  });
-  const [error, setError] = useState("");
-  useEffect(() => {
-    let active = true;
-    Promise.all([
-      loadCountry(),
-      loadState(),
-      loadDistrict(),
-      loadCity(),
-      loadPincode(),
-      loadAddressType(),
-    ])
-      .then(([countries, states, districts, cities, pincodes, types]) => {
-        if (active)
-          setChoices({ countries, states, districts, cities, pincodes, types });
-      })
-      .catch(() => {
-        if (active)
-          setError(
-            "Location choices are unavailable. Existing address text is preserved.",
-          );
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-  const options = (values: Choice[]) =>
-    values
-      .filter((value) => value.active)
-      .map((value) => ({ value: value.public_id, label: value.name }));
+  const states = useCallback((query: MasterListRemoteQuery, signal: AbortSignal) =>
+    loadStateReferencePage(query, signal, {countryId: address.countryId}), [address.countryId]);
+  const state = useCallback(async (publicId: string, signal: AbortSignal) => {
+    const record = await getState(publicId, signal);
+    if (address.countryId && record.countryId !== address.countryId)
+      throw new Error("The selected state does not belong to the selected country. Existing address text is preserved.");
+    return record;
+  }, [address.countryId]);
+  const districts = useCallback((query: MasterListRemoteQuery, signal: AbortSignal) =>
+    loadDistrictReferencePage(query, signal, {stateId: address.stateId}), [address.stateId]);
+  const district = useCallback(async (publicId: string, signal: AbortSignal) => {
+    const record = await getDistrict(publicId, signal);
+    if (address.stateId && record.stateId !== address.stateId)
+      throw new Error("The selected district does not belong to the selected state. Existing address text is preserved.");
+    return record;
+  }, [address.stateId]);
+  const cities = useCallback((query: MasterListRemoteQuery, signal: AbortSignal) =>
+    loadCityReferencePage(query, signal, {districtId: address.districtId}), [address.districtId]);
+  const city = useCallback(async (publicId: string, signal: AbortSignal) => {
+    const record = await getCity(publicId, signal);
+    if (address.districtId && record.districtId !== address.districtId)
+      throw new Error("The selected city does not belong to the selected district. Existing address text is preserved.");
+    return record;
+  }, [address.districtId]);
+  const pincodes = useCallback((query: MasterListRemoteQuery, signal: AbortSignal) =>
+    loadPincodeReferencePage(query, signal, {cityId: address.cityId}), [address.cityId]);
+  const pincode = useCallback(async (publicId: string, signal: AbortSignal) => {
+    const record = await getPincode(publicId, signal);
+    if (address.cityId && record.cityId !== address.cityId)
+      throw new Error("The selected postal code does not belong to the selected city. Existing address text is preserved.");
+    return record;
+  }, [address.cityId]);
   return (
     <div className="space-y-3">
-      {error && <p role="alert">{error}</p>}
       <UpsertFormField
         idPrefix={id}
         name={"address-reference-type-" + index}
         label="Address type reference"
         helper="Optional managed address type."
       >
-        <FormLookup
+        <ReferencePicker
           ariaLabel={"Address type reference " + (index + 1)}
-          allowTextValue={false}
-          options={options(choices.types)}
+          loadPage={loadAddressTypeReferencePage}
+          loadSelected={getAddressTypeReference}
           value={address.addressTypeId}
           onValueChange={(addressTypeId) => onChange({ addressTypeId })}
         />
@@ -96,15 +74,15 @@ export function AddressReferences({
         label="Country reference"
         helper="Select the country before its locations."
       >
-        <FormLookup
+        <ReferencePicker
           ariaLabel={"Country reference " + (index + 1)}
-          allowTextValue={false}
-          options={options(choices.countries)}
+          loadPage={loadCountryReferencePage}
+          loadSelected={getCountryReference}
           value={address.countryId}
           onValueChange={(countryId, option) =>
             onChange({
               countryId,
-              country: option?.label ?? address.country,
+              country: option?.name ?? address.country,
               stateId: "",
               districtId: "",
               cityId: "",
@@ -119,19 +97,17 @@ export function AddressReferences({
         label="State reference"
         helper="States in the selected country."
       >
-        <FormLookup
+        <ReferencePicker
           ariaLabel={"State reference " + (index + 1)}
-          allowTextValue={false}
-          options={options(
-            choices.states.filter(
-              (value) => value.countryId === address.countryId,
-            ),
-          )}
+          loadPage={states}
+          loadSelected={state}
+          scopeKey={address.countryId}
+          disabled={!address.countryId}
           value={address.stateId}
           onValueChange={(stateId, option) =>
             onChange({
               stateId,
-              state: option?.label ?? address.state,
+              state: option?.name ?? address.state,
               districtId: "",
               cityId: "",
               pincodeId: "",
@@ -145,14 +121,12 @@ export function AddressReferences({
         label="District reference"
         helper="Districts in the selected state."
       >
-        <FormLookup
+        <ReferencePicker
           ariaLabel={"District reference " + (index + 1)}
-          allowTextValue={false}
-          options={options(
-            choices.districts.filter(
-              (value) => value.stateId === address.stateId,
-            ),
-          )}
+          loadPage={districts}
+          loadSelected={district}
+          scopeKey={address.stateId}
+          disabled={!address.stateId}
           value={address.districtId}
           onValueChange={(districtId) =>
             onChange({ districtId, cityId: "", pincodeId: "" })
@@ -165,19 +139,17 @@ export function AddressReferences({
         label="City reference"
         helper="Cities in the selected district."
       >
-        <FormLookup
+        <ReferencePicker
           ariaLabel={"City reference " + (index + 1)}
-          allowTextValue={false}
-          options={options(
-            choices.cities.filter(
-              (value) => value.districtId === address.districtId,
-            ),
-          )}
+          loadPage={cities}
+          loadSelected={city}
+          scopeKey={address.districtId}
+          disabled={!address.districtId}
           value={address.cityId}
           onValueChange={(cityId, option) =>
             onChange({
               cityId,
-              city: option?.label ?? address.city,
+              city: option?.name ?? address.city,
               pincodeId: "",
             })
           }
@@ -189,17 +161,17 @@ export function AddressReferences({
         label="Postal-code reference"
         helper="Postal codes in the selected city."
       >
-        <FormLookup
+        <ReferencePicker
           ariaLabel={"Postal-code reference " + (index + 1)}
-          allowTextValue={false}
-          options={options(
-            choices.pincodes.filter((value) => value.cityId === address.cityId),
-          )}
+          loadPage={pincodes}
+          loadSelected={pincode}
+          scopeKey={address.cityId}
+          disabled={!address.cityId}
           value={address.pincodeId}
           onValueChange={(pincodeId, option) =>
             onChange({
               pincodeId,
-              postalCode: option?.label ?? address.postalCode,
+              postalCode: option?.name ?? address.postalCode,
             })
           }
         />

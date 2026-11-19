@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type { Country, CountryValues } from "../../../../../contracts/country";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -25,3 +27,6 @@ export function saveCountry(values: CountryValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadCountryReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<Country,'public_id'|'name'|'active'>>>{return loadReferencePage('countries',query,signal);}
+export function getCountryReference(id:string,signal?:AbortSignal):Promise<Pick<Country,'public_id'|'name'|'active'>>{return loadSelectedReference('countries',id,signal);}

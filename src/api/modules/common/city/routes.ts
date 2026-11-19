@@ -105,7 +105,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const cityOpenApiPaths = {
-  '/api/v1/cities/page':{get:modulePageOpenApi('cityPage',["name","districtId","sortOrder","active"])},
+  '/api/v1/cities/page':{get:modulePageOpenApi('cityPage',["name","districtId","sortOrder","active"],['districtId'])},
   "/api/v1/cities": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

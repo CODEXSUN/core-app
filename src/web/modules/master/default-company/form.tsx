@@ -6,7 +6,7 @@ import {
   UpsertFormSection,
   UpsertFormValidationSummary,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from "../../shared/reference-picker";
 import { FormSelect } from "@workspace/ui/blocks/form-controls/select";
 import { FormDatePicker } from "@workspace/ui/blocks/form-controls/date-picker";
 import { useUnsavedChangesGuard } from "@workspace/ui/blocks/unsaved-changes-guard";
@@ -16,8 +16,8 @@ import {
   type DefaultCompanyValues,
 } from "../../../../../contracts/default-company";
 import { useNavigation } from "../../../navigation";
-import { loadCompany } from "../../master/company";
-import { loadFinancialYear } from "../../master/financial-year";
+import {loadCompanyReferencePage,getCompanyReference} from "../../master/company";
+import {loadFinancialYearReferencePage,getFinancialYearReference} from "../../master/financial-year";
 
 type Props = {
   id: string;
@@ -55,11 +55,6 @@ export function DefaultCompanyForm({
   const [values, setValues] = useState(initial.current);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [lookups, setLookups] = useState<
-    Record<string, { value: string; label: string }[]>
-  >({});
-  const [lookupError, setLookupError] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(true);
   const pending = useRef(false);
   const { setGuard } = useNavigation();
   const guard = useUnsavedChangesGuard({
@@ -74,47 +69,7 @@ export function DefaultCompanyForm({
     );
     return () => setGuard(null);
   }, [values, saving, guard.requestNavigation, setGuard]);
-  useEffect(() => {
-    let active = true;
-    Promise.all([loadCompany(), loadFinancialYear()])
-      .then(([companyIdRecords, financialYearIdRecords]) => {
-        if (active)
-          setLookups({
-            companyId: companyIdRecords
-              .filter(
-                (record) =>
-                  record.active ||
-                  record.public_id === initial.current.companyId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-            financialYearId: financialYearIdRecords
-              .filter(
-                (record) =>
-                  record.active ||
-                  record.public_id === initial.current.financialYearId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-          });
-      })
-      .catch(() => {
-        if (active)
-          setLookupError(
-            "Unable to load reference choices. Check access or reload this form.",
-          );
-      })
-      .finally(() => {
-        if (active) setLookupLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+
   return (
     <>
       {guard.dialog}
@@ -123,14 +78,10 @@ export function DefaultCompanyForm({
         id={id}
         noValidate
         saving={saving}
-        error={error || lookupError}
+        error={error}
         onSubmit={async (event) => {
           event.preventDefault();
           if (pending.current || saving) return;
-          if (lookupLoading || lookupError) {
-            setError(lookupError || "Wait for reference choices to load.");
-            return;
-          }
           const parsed = defaultCompanyValuesSchema.safeParse(values);
           setErrors({});
           setError("");
@@ -187,14 +138,12 @@ export function DefaultCompanyForm({
             error={errors.companyId}
             required
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Company"
               value={values.companyId}
-              options={lookups.companyId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, companyId: value }))
-              }
+              loadPage={loadCompanyReferencePage}
+              loadSelected={getCompanyReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,companyId:value}));setErrors(previous=>{const next={...previous};delete next.companyId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -205,17 +154,12 @@ export function DefaultCompanyForm({
             error={errors.financialYearId}
             required
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Financial year"
               value={values.financialYearId}
-              options={lookups.financialYearId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({
-                  ...previous,
-                  financialYearId: value,
-                }))
-              }
+              loadPage={loadFinancialYearReferencePage}
+              loadSelected={getFinancialYearReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,financialYearId:value}));setErrors(previous=>{const next={...previous};delete next.financialYearId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField

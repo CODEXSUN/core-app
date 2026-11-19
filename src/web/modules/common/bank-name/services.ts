@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   BankName,
@@ -28,3 +30,6 @@ export function saveBankName(values: BankNameValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadBankNameReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<BankName,'public_id'|'name'|'active'>>>{return loadReferencePage('bank-names',query,signal);}
+export function getBankNameReference(id:string,signal?:AbortSignal):Promise<Pick<BankName,'public_id'|'name'|'active'>>{return loadSelectedReference('bank-names',id,signal);}

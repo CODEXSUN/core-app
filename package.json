@@ -1,6 +1,6 @@
 {
   "name": "@workspace/core-app",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "type": "module",
   "engines": {
@@ -27,7 +27,7 @@
     "db:migrate": "node scripts/database.ts migrate",
     "db:rollback": "node scripts/database.ts rollback",
     "db:seed": "node scripts/database.ts seed",
-    "test:database": "node --env-file=.env.test --test --test-concurrency=1 src/api/modules/*/*/tests/*.test.ts tests/core-modules.database.ts tests/billing-catalog.database.ts",
+    "test:database": "node --env-file=.env.test --test --test-concurrency=1 src/api/modules/*/*/tests/*.test.ts tests/core-modules.database.ts tests/billing-catalog.database.ts tests/form-reference-budget.database.ts tests/reference-cascade.database.ts",
     "client:create": "node scripts/create-api-client.ts",
     "dev:api": "node --watch src/api/server.ts",
     "dev:web": "vite"

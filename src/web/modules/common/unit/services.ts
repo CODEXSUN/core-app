@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type { Unit, UnitValues } from "../../../../../contracts/unit";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -25,3 +27,6 @@ export function saveUnit(values: UnitValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadUnitReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<Unit,'public_id'|'name'|'active'>>>{return loadReferencePage('units',query,signal);}
+export function getUnitReference(id:string,signal?:AbortSignal):Promise<Pick<Unit,'public_id'|'name'|'active'>>{return loadSelectedReference('units',id,signal);}

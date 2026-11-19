@@ -6,7 +6,7 @@ import {
   UpsertFormSection,
   UpsertFormValidationSummary,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from "../../shared/reference-picker";
 import { FormSelect } from "@workspace/ui/blocks/form-controls/select";
 import { FormDatePicker } from "@workspace/ui/blocks/form-controls/date-picker";
 import { useUnsavedChangesGuard } from "@workspace/ui/blocks/unsaved-changes-guard";
@@ -16,7 +16,7 @@ import {
   type PincodeValues,
 } from "../../../../../contracts/pincode";
 import { useNavigation } from "../../../navigation";
-import { loadCity } from "../../common/city";
+import {loadCityReferencePage,getCityReference} from "../../common/city";
 
 type Props = {
   id: string;
@@ -54,11 +54,6 @@ export function PincodeForm({
   const [values, setValues] = useState(initial.current);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [lookups, setLookups] = useState<
-    Record<string, { value: string; label: string }[]>
-  >({});
-  const [lookupError, setLookupError] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(true);
   const pending = useRef(false);
   const { setGuard } = useNavigation();
   const guard = useUnsavedChangesGuard({
@@ -73,36 +68,7 @@ export function PincodeForm({
     );
     return () => setGuard(null);
   }, [values, saving, guard.requestNavigation, setGuard]);
-  useEffect(() => {
-    let active = true;
-    Promise.all([loadCity()])
-      .then(([cityIdRecords]) => {
-        if (active)
-          setLookups({
-            cityId: cityIdRecords
-              .filter(
-                (record) =>
-                  record.active || record.public_id === initial.current.cityId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-          });
-      })
-      .catch(() => {
-        if (active)
-          setLookupError(
-            "Unable to load reference choices. Check access or reload this form.",
-          );
-      })
-      .finally(() => {
-        if (active) setLookupLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+
   return (
     <>
       {guard.dialog}
@@ -111,14 +77,10 @@ export function PincodeForm({
         id={id}
         noValidate
         saving={saving}
-        error={error || lookupError}
+        error={error}
         onSubmit={async (event) => {
           event.preventDefault();
           if (pending.current || saving) return;
-          if (lookupLoading || lookupError) {
-            setError(lookupError || "Wait for reference choices to load.");
-            return;
-          }
           const parsed = pincodeValuesSchema.safeParse(values);
           setErrors({});
           setError("");
@@ -175,14 +137,12 @@ export function PincodeForm({
             error={errors.cityId}
             required
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="City"
               value={values.cityId}
-              options={lookups.cityId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, cityId: value }))
-              }
+              loadPage={loadCityReferencePage}
+              loadSelected={getCityReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,cityId:value}));setErrors(previous=>{const next={...previous};delete next.cityId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField

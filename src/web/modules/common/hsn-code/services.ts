@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type { HsnCode, HsnCodeValues } from "../../../../../contracts/hsn-code";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -25,3 +27,6 @@ export function saveHsnCode(values: HsnCodeValues, publicId?: string) {
     body: JSON.stringify(values),
   });
 }
+
+export function loadHsnCodeReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<HsnCode,'public_id'|'name'|'active'>>>{return loadReferencePage('hsn-codes',query,signal);}
+export function getHsnCodeReference(id:string,signal?:AbortSignal):Promise<Pick<HsnCode,'public_id'|'name'|'active'>>{return loadSelectedReference('hsn-codes',id,signal);}

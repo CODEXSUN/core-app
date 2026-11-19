@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
 import { Button, Input, Switch } from "@workspace/ui";
 import {
   UpsertFormField,
   UpsertFormSection,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from './reference-picker';
 import type { BankAccount, SocialLink } from "../../../../contracts/party";
-import { loadBankName } from "../common/bank-name";
+import {loadBankNameReferencePage,getBankNameReference} from '../common/bank-name';
 
 export function PartyBusinessFields({
   id,
@@ -24,34 +23,11 @@ export function PartyBusinessFields({
     socialLinks?: SocialLink[];
   }) => void;
 }) {
-  const [banks, setBanks] = useState<{ value: string; label: string }[]>([]);
-  const [bankError, setBankError] = useState("");
-  useEffect(() => {
-    let active = true;
-    loadBankName()
-      .then((rows) => {
-        if (active)
-          setBanks(
-            rows
-              .filter((row) => row.active)
-              .map((row) => ({ value: row.public_id, label: row.name })),
-          );
-      })
-      .catch(() => {
-        if (active)
-          setBankError(
-            "Bank reference choices are unavailable. Existing account values are preserved.",
-          );
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
   return (
     <>
       <UpsertFormSection label="Bank accounts">
-        {(errors.bankAccounts || bankError) && (
-          <p role="alert">{errors.bankAccounts || bankError}</p>
+        {errors.bankAccounts && (
+          <p role="alert">{errors.bankAccounts}</p>
         )}
         {bankAccounts.map((account, index) => {
           const update = (patch: Partial<BankAccount>) =>
@@ -68,15 +44,15 @@ export function PartyBusinessFields({
                 label="Bank reference"
                 helper="Choose a bank, or retain an existing free-text bank name."
               >
-                <FormLookup
+                <ReferencePicker
                   ariaLabel={"Bank " + (index + 1)}
-                  allowTextValue={false}
-                  options={banks}
+                  loadPage={loadBankNameReferencePage}
+                  loadSelected={getBankNameReference}
                   value={account.bankNameId}
                   onValueChange={(value, option) =>
                     update({
                       bankNameId: value,
-                      bankName: option?.label ?? account.bankName,
+                      bankName: option?.name ?? account.bankName,
                     })
                   }
                 />

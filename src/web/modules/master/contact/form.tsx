@@ -6,7 +6,7 @@ import {
   UpsertFormSection,
   UpsertFormValidationSummary,
 } from "@workspace/ui/blocks/upsert-form";
-import { FormLookup } from "@workspace/ui/blocks/form-controls/lookup";
+import {ReferencePicker} from "../../shared/reference-picker";
 import { FormSelect } from "@workspace/ui/blocks/form-controls/select";
 import { FormDatePicker } from "@workspace/ui/blocks/form-controls/date-picker";
 import { useUnsavedChangesGuard } from "@workspace/ui/blocks/unsaved-changes-guard";
@@ -16,8 +16,8 @@ import {
   type ContactValues,
 } from "../../../../../contracts/contact";
 import { useNavigation } from "../../../navigation";
-import { loadContactType } from "../../common/contact-type";
-import { loadContactGroup } from "../../common/contact-group";
+import {loadContactTypeReferencePage,getContactTypeReference} from "../../common/contact-type";
+import {loadContactGroupReferencePage,getContactGroupReference} from "../../common/contact-group";
 import { PartyContactFields } from "../../shared/party-fields";
 import { PartyBusinessFields } from "../../shared/party-business-fields";
 type Props = {
@@ -73,11 +73,6 @@ export function ContactForm({
   const [values, setValues] = useState(initial.current);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [lookups, setLookups] = useState<
-    Record<string, { value: string; label: string }[]>
-  >({});
-  const [lookupError, setLookupError] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(true);
   const pending = useRef(false);
   const { setGuard } = useNavigation();
   const guard = useUnsavedChangesGuard({
@@ -92,45 +87,7 @@ export function ContactForm({
     );
     return () => setGuard(null);
   }, [values, saving, guard.requestNavigation, setGuard]);
-  useEffect(() => {
-    let active = true;
-    Promise.all([loadContactType(), loadContactGroup()])
-      .then(([typeIdRecords, groupIdRecords]) => {
-        if (active)
-          setLookups({
-            typeId: typeIdRecords
-              .filter(
-                (record) =>
-                  record.active || record.public_id === initial.current.typeId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-            groupId: groupIdRecords
-              .filter(
-                (record) =>
-                  record.active || record.public_id === initial.current.groupId,
-              )
-              .map((record) => ({
-                value: record.public_id,
-                label: record.name,
-              })),
-          });
-      })
-      .catch(() => {
-        if (active)
-          setLookupError(
-            "Unable to load reference choices. Check access or reload this form.",
-          );
-      })
-      .finally(() => {
-        if (active) setLookupLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+
   return (
     <>
       {guard.dialog}
@@ -139,14 +96,10 @@ export function ContactForm({
         id={id}
         noValidate
         saving={saving}
-        error={error || lookupError}
+        error={error}
         onSubmit={async (event) => {
           event.preventDefault();
           if (pending.current || saving) return;
-          if (lookupLoading || lookupError) {
-            setError(lookupError || "Wait for reference choices to load.");
-            return;
-          }
           const parsed = contactValuesSchema.safeParse(values);
           setErrors({});
           setError("");
@@ -261,14 +214,12 @@ export function ContactForm({
             helper="Choose an authorized record."
             error={errors.typeId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Contact type"
               value={values.typeId}
-              options={lookups.typeId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, typeId: value }))
-              }
+              loadPage={loadContactTypeReferencePage}
+              loadSelected={getContactTypeReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,typeId:value}));setErrors(previous=>{const next={...previous};delete next.typeId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField
@@ -278,14 +229,12 @@ export function ContactForm({
             helper="Choose an authorized record."
             error={errors.groupId}
           >
-            <FormLookup
+            <ReferencePicker
               ariaLabel="Contact group"
               value={values.groupId}
-              options={lookups.groupId ?? []}
-              allowTextValue={false}
-              onValueChange={(value) =>
-                setValues((previous) => ({ ...previous, groupId: value }))
-              }
+              loadPage={loadContactGroupReferencePage}
+              loadSelected={getContactGroupReference}
+              onValueChange={(value)=>{setValues(previous=>({...previous,groupId:value}));setErrors(previous=>{const next={...previous};delete next.groupId;return next;});setError('');}}
             />
           </UpsertFormField>
           <UpsertFormField

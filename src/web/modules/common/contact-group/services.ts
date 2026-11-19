@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   ContactGroup,
@@ -34,3 +36,6 @@ export function saveContactGroup(
     },
   );
 }
+
+export function loadContactGroupReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<ContactGroup,'public_id'|'name'|'active'>>>{return loadReferencePage('contact-groups',query,signal);}
+export function getContactGroupReference(id:string,signal?:AbortSignal):Promise<Pick<ContactGroup,'public_id'|'name'|'active'>>{return loadSelectedReference('contact-groups',id,signal);}

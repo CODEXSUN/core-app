@@ -1,3 +1,5 @@
+import type {MasterListRemoteQuery} from '@workspace/ui/blocks/data-table';
+import {loadReferencePage,loadSelectedReference,type ReferencePage} from '../../shared/reference-transport';
 import {appFetch} from '../../../platform-client.ts';
 import type {
   FinancialYear,
@@ -34,3 +36,6 @@ export function saveFinancialYear(
     },
   );
 }
+
+export function loadFinancialYearReferencePage(query:MasterListRemoteQuery,signal?:AbortSignal):Promise<ReferencePage<Pick<FinancialYear,'public_id'|'name'|'active'>>>{return loadReferencePage('financial-years',query,signal);}
+export function getFinancialYearReference(id:string,signal?:AbortSignal):Promise<Pick<FinancialYear,'public_id'|'name'|'active'>>{return loadSelectedReference('financial-years',id,signal);}

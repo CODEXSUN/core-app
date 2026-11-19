@@ -167,6 +167,6 @@ export async function updateDistrict(
 }
 
 export async function pageDistrictRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
- const result=await pageModuleRecords(db,query(db).where('districts.tenant_id','=',context.tenantId).where('districts.deleted_at','is',null),input,{"name":{"field":"name"},"stateId":{"field":"stateName"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ const result=await pageModuleRecords(db,query(db).where('districts.tenant_id','=',context.tenantId).where('districts.deleted_at','is',null),input,{"name":{"field":"name"},"stateId":{"field":"stateName","referenceField":"stateId"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
  return result;
 }
