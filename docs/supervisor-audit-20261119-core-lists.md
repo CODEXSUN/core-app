@@ -1,6 +1,6 @@
 # Core master-list gateway budget audit — 2026-11-19
 
-Status: locally release-ready for0.1.6; tagged workflow/manifest and CodeShip deployment remain pending. Typecheck/build,24 unit/tool checks and47 PostgreSQL checks passed. No migration or live data/process change.
+Status: immutable0.1.6 release-ready for CodeShip; tagged workflow44441018652 succeeded and release/image manifest was retrieved and verified. Typecheck/build,24 unit/tool checks and47 PostgreSQL checks passed locally and in tagged CI. CodeShip deployment/live audit remains separate. No migration or live data/process change by this source owner.
 
 ## Measured defect and result
 
@@ -29,3 +29,9 @@ All37 frontend list branches now use controlled MasterList remote mode. Zero-bas
 Pins: framework0.2.0 `51daaa2a7bee32d0a8eca806a2b0e8a765a3e1ac`, UI0.1.13 `984a9d2afd4dcfdc80bd1f940c9a94cb0dff298b`, SDK0.1.6 `cfcb231fee23a2cb9920beaffee3140b8cf8b355`. Public UI's actual viewport/controller evidence is owned by its pagination report; Core app-specific live screenshots and end-to-end heavy-user latency remain post-deployment checks. This is not a blanket production100-user certification or a guarantee for legacy bulk callers, unconverted form reference pickers, exports or every deployment host.
 
 CodeShip alone deploys after immutable tag/workflow/manifest approval; Core0.1.5 and Billing's consuming release remain separate ordered lanes. Preserve identities, application grants, tenant/company policies, writer data and native processes. No fresh/reset/seed or schema downgrade is authorized by this source change.
+
+## Verified release
+
+Tagv-0.1.6, commit28bac4d4fac100d50592dbf9feb5b4cac34e4fe4. [Successful workflow44441018652](https://github.com/CODEXSUN/core-app/actions/runs/44441018652); [immutable GitHub release](https://github.com/CODEXSUN/core-app/releases/tag/v-0.1.6).
+
+Image ghcr.io/codexsun/core-app@sha256:e98794ee7ae8190ea81e9edafe2b4b0656af746fdbdd24fd9531372aa97f1596. Manifest image ID matches sha256:e98794ee7ae8190ea81e9edafe2b4b0656af746fdbdd24fd9531372aa97f1596; archive SHA25698a4d301f26c068c4bac5be9130f82759a6bb7f504bd650044a7f29be82aafd7. All40migrationhashes remain unchanged; actual installed history must still be checked by CodeShip. This includes the prior0.1.5 bounded Billing contracts, so CodeShip may deploy0.1.6 directly before consuming Billing rather than install an unnecessary interim image. Native source checkout is synchronized with published release code; unrelated historical work-record notes remain preserved.
