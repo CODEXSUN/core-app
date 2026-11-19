@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import type { Kysely } from "kysely";
 import type { Database } from "./database/schema.ts";
 import { createAuthentication, sessionOpenApiPaths } from "./auth.ts";
+import {registerBillingContextRoutes,billingContextOpenApiPaths} from './integrations/billing/routes.ts';
 import {
   registerCoreModules,
   coreOpenApiPaths,
@@ -32,6 +33,7 @@ export function createApplication(
     return payload;
   });
   registerCoreModules(app, db, auth.resolveContext);
+  registerBillingContextRoutes(app,db,auth.resolveContext);
   const manifest = JSON.parse(
     readFileSync(path.join(root, "package.json"), "utf8"),
   );
@@ -55,7 +57,7 @@ export function createApplication(
           },
         },
       },
-      paths: { ...sessionOpenApiPaths, ...coreOpenApiPaths },
+      paths: { ...sessionOpenApiPaths, ...coreOpenApiPaths,...billingContextOpenApiPaths },
     };
   });
   app.get("/api/docs", async (request, reply) => {

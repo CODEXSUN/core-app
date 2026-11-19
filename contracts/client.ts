@@ -36,6 +36,7 @@ import type { Product } from "./product.ts";
 import type { WorkOrder } from "./work-order.ts";
 import type { DefaultCompany } from "./default-company.ts";
 import type { OrganisationContext } from "./organisation-context.ts";
+import {billingContextSelectionSchema,type BillingContextSelection,type BillingCoreContext} from './billing-context.ts';
 // Server-to-server client. Keep the token in Billing's private server environment.
 // The API, not a tenant argument or request header, determines the authorized scope.
 export function createCoreClient({
@@ -75,6 +76,10 @@ export function createCoreClient({
     return response.json();
   }
   return {
+    getBillingContext:(selection:BillingContextSelection={})=>{
+      const value=billingContextSelectionSchema.parse(selection),query=new URLSearchParams(value).toString();
+      return read<BillingCoreContext>('billing-context'+(query?'?'+query:''));
+    },
     listCountries: () => read<Country[]>("countries"),
     getCountry: (publicId: string) => read<Country>("countries", publicId),
     listStates: () => read<State[]>("states"),

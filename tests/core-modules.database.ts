@@ -186,6 +186,17 @@ test("all 37 Core modules, references, seeds and upgrade recovery", async (t) =>
           !("id" in context.json().company) &&
             !("id" in context.json().financialYear),
         );
+        const aggregate=await app.inject({url:'/api/v1/billing-context',headers:reader});
+        assert.equal(aggregate.statusCode,200,aggregate.body);
+        assert.equal(aggregate.json().company.public_id,records.get('company')!.public_id);
+        assert.equal(aggregate.json().financialYear.public_id,records.get('financial-year')!.public_id);
+        assert.ok(aggregate.json().contacts.some((row:any)=>row.public_id===records.get('contact')!.public_id));
+        assert.ok(aggregate.json().products.some((row:any)=>row.public_id===records.get('product')!.public_id));
+        assert.ok(!JSON.stringify(aggregate.json()).includes('tenant-a'),'aggregate exposes no internal tenant identifiers');
+        assert.equal((await app.inject('/api/v1/billing-context')).statusCode,401);
+        assert.equal((await app.inject({url:'/api/v1/billing-context?tenantId=tenant-b',headers:reader})).statusCode,400);
+        assert.equal((await app.inject({url:'/api/v1/billing-context?companyId=zzzzzzzz',headers:reader})).statusCode,409);
+        assert.equal((await app.inject({url:'/api/v1/billing-context?companyId='+records.get('company')!.public_id,headers:headersB})).statusCode,404,'another tenant cannot acquire the selected company context');
         assert.equal(
           (
             await app.inject({

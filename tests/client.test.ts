@@ -9,6 +9,16 @@ test('a delegated Core transport needs no fabricated static credential',async()=
  assert.deepEqual(await client.listContacts(),[]);assert.equal(headers?.get('authorization'),null);
 });
 
+test('Billing aggregate client validates selections and sends one scoped HTTP request',async()=>{
+ const calls:string[]=[];
+ const client=createCoreClient({baseUrl:'http://127.0.0.1:4345',fetcher:async input=>{calls.push(String(input));return Response.json({});}});
+ await client.getBillingContext({companyId:'aaaaaaaa',financialYearId:'bbbbbbbb'});
+ assert.deepEqual(calls,['http://127.0.0.1:4345/api/v1/billing-context?companyId=aaaaaaaa&financialYearId=bbbbbbbb']);
+ assert.throws(()=>client.getBillingContext({companyId:'../tenant'}));
+ assert.throws(()=>client.getBillingContext({tenantId:'other'} as any));
+ assert.equal(calls.length,1);
+});
+
 test("Billing read client uses server credentials, validates IDs and reports failures", async () => {
   const token = "test-only-key-".repeat(4);
   const requests: { url: string; authorization: string | null }[] = [];

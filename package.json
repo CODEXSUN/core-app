@@ -58,6 +58,7 @@
     "./legacy-contact": "./contracts/legacy-contact-port.ts",
     "./contracts/legacy-contact": "./contracts/legacy-contact.ts",
     "./client": "./contracts/client.ts",
+    "./contracts/billing-context": "./contracts/billing-context.ts",
     "./contracts/organisation-context": "./contracts/organisation-context.ts",
     "./contracts/country": "./contracts/country.ts",
     "./contracts/state": "./contracts/state.ts",

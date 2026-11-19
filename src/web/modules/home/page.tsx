@@ -465,7 +465,7 @@ function Workspace() {
       statusLabel={session ? "Connected" : "Not connected"}
       versionLabel={"v " + appVersion}
     >
-      <main className={module && tail.length === 1 ? "workspace-list-content space-y-5" : "mx-auto w-full max-w-7xl space-y-5 p-6 sm:p-10"}>
+      <main className={module && tail.length === 1 ? "workspace-list-content space-y-5" : "w-full min-w-0 space-y-5 p-4 sm:p-6 lg:p-10"}>
         <h1 className="sr-only">{label}</h1>
         <ContentBoundary resetKey={path}>
           <Suspense fallback={<AsyncState loading>{null}</AsyncState>}>
