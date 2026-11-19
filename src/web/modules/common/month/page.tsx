@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Month } from "../../../../../contracts/month";
-import { loadMonth, getMonth, saveMonth } from "./services";
+import { getMonth, saveMonth } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { MonthForm } from "./form";
 import { MonthShow } from "./show";
-const columns: MasterListColumn<Month>[] = [
+type MonthListRow=Pick<Month,'public_id'|'active'|'name'|'startDate'|'endDate'|'sortOrder'>;
+const columns: MasterListColumn<MonthListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "startDate", label: "Start date", value: (record) => record.startDate },
   { id: "endDate", label: "End date", value: (record) => record.endDate },
@@ -49,26 +51,21 @@ export default function MonthPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Month[]>([]);
+  const list=useRemoteModuleList<MonthListRow>('months',kind==='list');
   const [record, setRecord] = useState<Month>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadMonth(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getMonth(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getMonth(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -177,12 +174,13 @@ export default function MonthPage({
   return (
     <MasterListV1
       label="Months"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/months/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

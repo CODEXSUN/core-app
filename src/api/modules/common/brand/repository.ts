@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -155,4 +156,9 @@ export async function updateBrand(
     return true;
   });
   return changed ? findBrand(db, context, publicId) : undefined;
+}
+
+export async function pageBrandRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('brands.tenant_id','=',context.tenantId).where('brands.deleted_at','is',null),input,{"name":{"field":"name"},"logoUrl":{"field":"logoUrl"},"logoAlt":{"field":"logoAlt"},"showOnStorefront":{"field":"showOnStorefront","boolean":true},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

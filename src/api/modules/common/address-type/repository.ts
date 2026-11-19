@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -152,4 +153,9 @@ export async function updateAddressType(
     return true;
   });
   return changed ? findAddressType(db, context, publicId) : undefined;
+}
+
+export async function pageAddressTypeRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('address_types.tenant_id','=',context.tenantId).where('address_types.deleted_at','is',null),input,{"name":{"field":"name"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

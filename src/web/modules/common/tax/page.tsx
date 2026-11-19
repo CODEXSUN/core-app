@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Tax } from "../../../../../contracts/tax";
-import { loadTax, getTax, saveTax } from "./services";
+import { getTax, saveTax } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { TaxForm } from "./form";
 import { TaxShow } from "./show";
-const columns: MasterListColumn<Tax>[] = [
+type TaxListRow=Pick<Tax,'public_id'|'active'|'name'|'ratePercent'|'description'|'sortOrder'>;
+const columns: MasterListColumn<TaxListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   {
     id: "ratePercent",
@@ -57,26 +59,21 @@ export default function TaxPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Tax[]>([]);
+  const list=useRemoteModuleList<TaxListRow>('taxes',kind==='list');
   const [record, setRecord] = useState<Tax>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadTax(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getTax(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getTax(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -181,12 +178,13 @@ export default function TaxPage({
   return (
     <MasterListV1
       label="Taxes"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/taxes/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

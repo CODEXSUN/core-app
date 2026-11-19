@@ -2,13 +2,29 @@
 
 ## Version State
 
-Current version: 0.1.5
+Current version: 0.1.6
 
-Release tag: v-0.1.5
+Release tag: v-0.1.6
 
-Changelog label: v 0.1.5
+Changelog label: v 0.1.6
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.6
+
+### [v 0.1.6] 2026-11-19 - Bound all Core master lists with controlled server pages
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.6.
+- Move all37 Core master-list screens to controlled remote pages; add per-owner bounded scoped page reads with allowlisted search/sort/column/status filters and exact totals. Preserve old bulk and full-record contracts.
+- SQL-select displayed scalar fields before paging response; measured contact/product100-row pages20,439/21,247 bytes pass the actual gateway where old3MiB collections fail. Explicit byte-budget errors request a smaller page without truncation.
+- Preserve show/new/edit flows; debounce/cancel stale list requests, validate metadata and hide unimplemented whole-dataset export instead of mislabeling a page.
+- Pin public UI0.1.13 and SDK0.1.6; typecheck/build,24 unit/tool checks and47 PostgreSQL checks pass. No schema migration, native restart, live data write or deployment.
 
 ## v-0.1.5
 

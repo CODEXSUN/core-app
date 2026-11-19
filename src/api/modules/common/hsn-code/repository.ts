@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -156,4 +157,9 @@ export async function updateHsnCode(
     return true;
   });
   return changed ? findHsnCode(db, context, publicId) : undefined;
+}
+
+export async function pageHsnCodeRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('hsn_codes.tenant_id','=',context.tenantId).where('hsn_codes.deleted_at','is',null),input,{"name":{"field":"name"},"code":{"field":"code"},"description":{"field":"description"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

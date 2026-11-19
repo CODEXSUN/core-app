@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Ledger } from "../../../../../contracts/ledger";
-import { loadLedger, getLedger, saveLedger } from "./services";
+import { getLedger, saveLedger } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { LedgerForm } from "./form";
 import { LedgerShow } from "./show";
-const columns: MasterListColumn<Ledger>[] = [
+type LedgerListRow=Pick<Ledger,'public_id'|'active'|'name'|'ledgerGroupName'|'sortOrder'>;
+const columns: MasterListColumn<LedgerListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   {
     id: "ledgerGroupId",
@@ -52,26 +54,21 @@ export default function LedgerPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Ledger[]>([]);
+  const list=useRemoteModuleList<LedgerListRow>('ledgers',kind==='list');
   const [record, setRecord] = useState<Ledger>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadLedger(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getLedger(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getLedger(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -180,12 +177,13 @@ export default function LedgerPage({
   return (
     <MasterListV1
       label="Ledgers"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/ledgers/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

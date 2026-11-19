@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { City } from "../../../../../contracts/city";
-import { loadCity, getCity, saveCity } from "./services";
+import { getCity, saveCity } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { CityForm } from "./form";
 import { CityShow } from "./show";
-const columns: MasterListColumn<City>[] = [
+type CityListRow=Pick<City,'public_id'|'active'|'name'|'districtName'|'sortOrder'>;
+const columns: MasterListColumn<CityListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   {
     id: "districtId",
@@ -52,26 +54,21 @@ export default function CityPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<City[]>([]);
+  const list=useRemoteModuleList<CityListRow>('cities',kind==='list');
   const [record, setRecord] = useState<City>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadCity(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getCity(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getCity(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -180,12 +177,13 @@ export default function CityPage({
   return (
     <MasterListV1
       label="Cities"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/cities/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

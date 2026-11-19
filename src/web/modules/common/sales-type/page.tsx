@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { SalesType } from "../../../../../contracts/sales-type";
-import { loadSalesType, getSalesType, saveSalesType } from "./services";
+import { getSalesType, saveSalesType } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { SalesTypeForm } from "./form";
 import { SalesTypeShow } from "./show";
-const columns: MasterListColumn<SalesType>[] = [
+type SalesTypeListRow=Pick<SalesType,'public_id'|'active'|'name'|'description'|'sortOrder'>;
+const columns: MasterListColumn<SalesTypeListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   {
     id: "description",
@@ -52,26 +54,21 @@ export default function SalesTypePage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<SalesType[]>([]);
+  const list=useRemoteModuleList<SalesTypeListRow>('sales-types',kind==='list');
   const [record, setRecord] = useState<SalesType>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadSalesType(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getSalesType(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getSalesType(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -182,12 +179,13 @@ export default function SalesTypePage({
   return (
     <MasterListV1
       label="Sales Types"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/sales-types/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

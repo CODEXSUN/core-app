@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -152,4 +153,9 @@ export async function updatePaymentTerm(
     return true;
   });
   return changed ? findPaymentTerm(db, context, publicId) : undefined;
+}
+
+export async function pagePaymentTermRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('payment_terms.tenant_id','=',context.tenantId).where('payment_terms.deleted_at','is',null),input,{"name":{"field":"name"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

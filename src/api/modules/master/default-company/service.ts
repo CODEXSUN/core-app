@@ -1,3 +1,4 @@
+import {pageDefaultCompanyRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -16,6 +17,7 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createDefaultCompanyService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'master/default-company:read');return pageDefaultCompanyRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "master/default-company:read");
       return listDefaultCompany(db, context);

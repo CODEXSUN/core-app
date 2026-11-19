@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -152,4 +153,9 @@ export async function updateWorkOrderType(
     return true;
   });
   return changed ? findWorkOrderType(db, context, publicId) : undefined;
+}
+
+export async function pageWorkOrderTypeRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('work_order_types.tenant_id','=',context.tenantId).where('work_order_types.deleted_at','is',null),input,{"name":{"field":"name"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

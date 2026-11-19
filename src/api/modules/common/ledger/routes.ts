@@ -1,3 +1,4 @@
+import {modulePageOpenApi} from '../../../../../contracts/module-page.ts';
 import { z } from "zod";
 import type { FastifyInstance } from "fastify";
 import type { ContextResolver } from "../../../database/context.ts";
@@ -10,6 +11,7 @@ export function registerLedgerRoutes(
   service: ReturnType<typeof createLedgerService>,
   resolveContext: ContextResolver,
 ) {
+  app.get('/api/v1/ledgers/page',(request,reply)=>performModule(request,reply,resolveContext,context=>service.page(context,request.query)));
   app.get("/api/v1/ledgers", (request, reply) =>
     performModule(request, reply, resolveContext, (context) =>
       service.list(context),
@@ -103,6 +105,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const ledgerOpenApiPaths = {
+  '/api/v1/ledgers/page':{get:modulePageOpenApi('ledgerPage',["name","ledgerGroupId","sortOrder","active"])},
   "/api/v1/ledgers": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { assertCompanyNotSelected } from "../default-company/index.ts";
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
@@ -195,4 +196,9 @@ export async function updateCompany(
     return true;
   });
   return changed ? findCompany(db, context, publicId) : undefined;
+}
+
+export async function pageCompanyRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('companies.tenant_id','=',context.tenantId).where('companies.deleted_at','is',null),input,{"name":{"field":"name"},"code":{"field":"code"},"legalName":{"field":"legalName"},"gstin":{"field":"gstin"},"pan":{"field":"pan"},"active":{"field":"active","boolean":true}});
+ return result;
 }

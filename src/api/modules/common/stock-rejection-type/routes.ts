@@ -1,3 +1,4 @@
+import {modulePageOpenApi} from '../../../../../contracts/module-page.ts';
 import { z } from "zod";
 import type { FastifyInstance } from "fastify";
 import type { ContextResolver } from "../../../database/context.ts";
@@ -10,6 +11,7 @@ export function registerStockRejectionTypeRoutes(
   service: ReturnType<typeof createStockRejectionTypeService>,
   resolveContext: ContextResolver,
 ) {
+  app.get('/api/v1/stock-rejection-types/page',(request,reply)=>performModule(request,reply,resolveContext,context=>service.page(context,request.query)));
   app.get("/api/v1/stock-rejection-types", (request, reply) =>
     performModule(request, reply, resolveContext, (context) =>
       service.list(context),
@@ -107,6 +109,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const stockRejectionTypeOpenApiPaths = {
+  '/api/v1/stock-rejection-types/page':{get:modulePageOpenApi('stockrejectiontypePage',["name","sortOrder","active"])},
   "/api/v1/stock-rejection-types": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

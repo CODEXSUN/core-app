@@ -1,3 +1,4 @@
+import {pageAddressTypeRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -16,6 +17,7 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createAddressTypeService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/address-type:read');return pageAddressTypeRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/address-type:read");
       return listAddressType(db, context);

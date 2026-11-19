@@ -1,3 +1,4 @@
+import {pageCityRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -11,6 +12,7 @@ import { listCity, findCity, insertCity, updateCity } from "./repository.ts";
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createCityService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/city:read');return pageCityRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/city:read");
       return listCity(db, context);

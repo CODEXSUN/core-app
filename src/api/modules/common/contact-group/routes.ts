@@ -1,3 +1,4 @@
+import {modulePageOpenApi} from '../../../../../contracts/module-page.ts';
 import { z } from "zod";
 import type { FastifyInstance } from "fastify";
 import type { ContextResolver } from "../../../database/context.ts";
@@ -10,6 +11,7 @@ export function registerContactGroupRoutes(
   service: ReturnType<typeof createContactGroupService>,
   resolveContext: ContextResolver,
 ) {
+  app.get('/api/v1/contact-groups/page',(request,reply)=>performModule(request,reply,resolveContext,context=>service.page(context,request.query)));
   app.get("/api/v1/contact-groups", (request, reply) =>
     performModule(request, reply, resolveContext, (context) =>
       service.list(context),
@@ -103,6 +105,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const contactGroupOpenApiPaths = {
+  '/api/v1/contact-groups/page':{get:modulePageOpenApi('contactgroupPage',["name","sortOrder","active"])},
   "/api/v1/contact-groups": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

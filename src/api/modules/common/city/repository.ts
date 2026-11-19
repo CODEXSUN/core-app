@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -164,4 +165,9 @@ export async function updateCity(
     return true;
   });
   return changed ? findCity(db, context, publicId) : undefined;
+}
+
+export async function pageCityRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('cities.tenant_id','=',context.tenantId).where('cities.deleted_at','is',null),input,{"name":{"field":"name"},"districtId":{"field":"districtName"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -247,4 +248,9 @@ export async function updateContact(
     return true;
   });
   return changed ? findContact(db, context, publicId) : undefined;
+}
+
+export async function pageContactRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('contacts.tenant_id','=',context.tenantId).where('contacts.deleted_at','is',null),input,{"name":{"field":"name"},"code":{"field":"code"},"legalName":{"field":"legalName"},"role":{"field":"role"},"typeId":{"field":"typeName"},"active":{"field":"active","boolean":true}});
+ return result;
 }

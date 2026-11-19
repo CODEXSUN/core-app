@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Currency } from "../../../../../contracts/currency";
-import { loadCurrency, getCurrency, saveCurrency } from "./services";
+import { getCurrency, saveCurrency } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { CurrencyForm } from "./form";
 import { CurrencyShow } from "./show";
-const columns: MasterListColumn<Currency>[] = [
+type CurrencyListRow=Pick<Currency,'public_id'|'active'|'name'|'symbol'|'sortOrder'>;
+const columns: MasterListColumn<CurrencyListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "symbol", label: "Symbol", value: (record) => record.symbol },
   { id: "sortOrder", label: "Sort order", value: (record) => record.sortOrder },
@@ -48,26 +50,21 @@ export default function CurrencyPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Currency[]>([]);
+  const list=useRemoteModuleList<CurrencyListRow>('currencies',kind==='list');
   const [record, setRecord] = useState<Currency>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadCurrency(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getCurrency(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getCurrency(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -178,12 +175,13 @@ export default function CurrencyPage({
   return (
     <MasterListV1
       label="Currencies"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/currencies/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

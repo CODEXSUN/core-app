@@ -81,6 +81,15 @@ test("all 37 Core modules, references, seeds and upgrade recovery", async (t) =>
           headers: headersA,
         });
         assert.equal(detail.statusCode, 200);
+        const page=await app.inject({url:url+'/page?pageSize=10&sort=name&direction=asc',headers:reader});
+        assert.equal(page.statusCode,200,page.body);assert.ok(page.json().rows.length<=10);assert.ok(page.json().rows.some((row:any)=>row.public_id===record.public_id));
+        assert.ok(!('id'in page.json().rows[0])&&!('tenant_id'in page.json().rows[0]));
+        assert.equal((await app.inject({url:url+'/page',headers:headersB})).json().total,0);
+        assert.equal((await app.inject(url+'/page')).statusCode,401);
+        const searched=await app.inject({url:url+'/page?q='+encodeURIComponent(String(values.name).slice(0,80)),headers:reader});assert.ok(searched.json().rows.some((row:any)=>row.public_id===record.public_id));
+        assert.equal((await app.inject({url:url+'/page?sort=tenant_id',headers:reader})).statusCode,400);
+        assert.equal((await app.inject({url:url+'/page?filters='+encodeURIComponent(JSON.stringify({tenantId:'foreign'})),headers:reader})).statusCode,400);
+        assert.equal((await app.inject({url:url+'/page?filterId=inactive',headers:reader})).json().total,0);
         assert.equal(
           (
             await app.inject({

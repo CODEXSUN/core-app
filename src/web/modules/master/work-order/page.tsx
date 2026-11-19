@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { WorkOrder } from "../../../../../contracts/work-order";
-import { loadWorkOrder, getWorkOrder, saveWorkOrder } from "./services";
+import { getWorkOrder, saveWorkOrder } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { WorkOrderForm } from "./form";
 import { WorkOrderShow } from "./show";
-const columns: MasterListColumn<WorkOrder>[] = [
+type WorkOrderListRow=Pick<WorkOrder,'public_id'|'active'|'name'|'code'>;
+const columns: MasterListColumn<WorkOrderListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "code", label: "Code", value: (record) => record.code },
   {
@@ -47,26 +49,21 @@ export default function WorkOrderPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<WorkOrder[]>([]);
+  const list=useRemoteModuleList<WorkOrderListRow>('work-orders',kind==='list');
   const [record, setRecord] = useState<WorkOrder>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadWorkOrder(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getWorkOrder(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getWorkOrder(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -177,12 +174,13 @@ export default function WorkOrderPage({
   return (
     <MasterListV1
       label="Work Orders"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/work-orders/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

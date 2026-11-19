@@ -1,3 +1,4 @@
+import {modulePageOpenApi} from '../../../../../contracts/module-page.ts';
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
 import { getOrganisationContext, getCurrentDefaultCompany } from "./index.ts";
@@ -15,6 +16,7 @@ export function registerDefaultCompanyRoutes(
   service: ReturnType<typeof createDefaultCompanyService>,
   resolveContext: ContextResolver,
 ) {
+  app.get('/api/v1/default-companies/page',(request,reply)=>performModule(request,reply,resolveContext,context=>service.page(context,request.query)));
   app.get("/api/v1/default-companies", (request, reply) =>
     performModule(request, reply, resolveContext, (context) =>
       service.list(context),
@@ -109,6 +111,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const defaultCompanyOpenApiPaths = {
+  '/api/v1/default-companies/page':{get:modulePageOpenApi('defaultcompanyPage',["name","companyId","financialYearId","landingApp","active"])},
   "/api/v1/default-companies": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

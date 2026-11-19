@@ -9,14 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { DefaultCompany } from "../../../../../contracts/default-company";
-import {
-  loadDefaultCompany,
-  getDefaultCompany,
-  saveDefaultCompany,
-} from "./services";
+import { getDefaultCompany, saveDefaultCompany } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { DefaultCompanyForm } from "./form";
 import { DefaultCompanyShow } from "./show";
-const columns: MasterListColumn<DefaultCompany>[] = [
+type DefaultCompanyListRow=Pick<DefaultCompany,'public_id'|'active'|'name'|'companyName'|'financialYearName'|'landingApp'>;
+const columns: MasterListColumn<DefaultCompanyListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "companyId", label: "Company", value: (record) => record.companyName },
   {
@@ -61,26 +59,21 @@ export default function DefaultCompanyPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<DefaultCompany[]>([]);
+  const list=useRemoteModuleList<DefaultCompanyListRow>('default-companies',kind==='list');
   const [record, setRecord] = useState<DefaultCompany>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadDefaultCompany(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getDefaultCompany(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getDefaultCompany(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -90,12 +83,13 @@ export default function DefaultCompanyPage({
       });
     return () => controller.abort();
   }, [kind, publicId, attempt]);
+  const canCreateDefault=kind!=='list'||list.total===0&&!list.query.search&&!list.query.filterId&&!Object.keys(list.query.filters).length;
   const ready =
     kind === "new" ||
     Boolean(record?.public_id === publicId && !loading && !error);
   useEffect(() => {
     const newAction =
-      canWrite && (kind !== "list" || records.length === 0) ? (
+      canWrite && canCreateDefault ? (
         <Button onClick={() => navigate("/default-companies/new")}>New</Button>
       ) : null;
     onHeaderActionsChange(
@@ -153,6 +147,7 @@ export default function DefaultCompanyPage({
     canWrite,
     navigate,
     onHeaderActionsChange,
+    canCreateDefault,
   ]);
   if (kind === "missing") return <p role="alert">Record not found.</p>;
   if ((kind === "new" || kind === "edit") && !canWrite)
@@ -199,12 +194,13 @@ export default function DefaultCompanyPage({
   return (
     <MasterListV1
       label="Default Companies"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/default-companies/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

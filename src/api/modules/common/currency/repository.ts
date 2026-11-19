@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -159,4 +160,9 @@ export async function updateCurrency(
     return true;
   });
   return changed ? findCurrency(db, context, publicId) : undefined;
+}
+
+export async function pageCurrencyRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('currencies.tenant_id','=',context.tenantId).where('currencies.deleted_at','is',null),input,{"name":{"field":"name"},"symbol":{"field":"symbol"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

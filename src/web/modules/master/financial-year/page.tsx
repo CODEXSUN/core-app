@@ -9,14 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { FinancialYear } from "../../../../../contracts/financial-year";
-import {
-  loadFinancialYear,
-  getFinancialYear,
-  saveFinancialYear,
-} from "./services";
+import { getFinancialYear, saveFinancialYear } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { FinancialYearForm } from "./form";
 import { FinancialYearShow } from "./show";
-const columns: MasterListColumn<FinancialYear>[] = [
+type FinancialYearListRow=Pick<FinancialYear,'public_id'|'active'|'name'|'startDate'|'endDate'|'isCurrent'>;
+const columns: MasterListColumn<FinancialYearListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "startDate", label: "Start date", value: (record) => record.startDate },
   { id: "endDate", label: "End date", value: (record) => record.endDate },
@@ -57,26 +55,21 @@ export default function FinancialYearPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<FinancialYear[]>([]);
+  const list=useRemoteModuleList<FinancialYearListRow>('financial-years',kind==='list');
   const [record, setRecord] = useState<FinancialYear>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadFinancialYear(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getFinancialYear(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getFinancialYear(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -192,12 +185,13 @@ export default function FinancialYearPage({
   return (
     <MasterListV1
       label="Financial Years"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/financial-years/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

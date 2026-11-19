@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Transport } from "../../../../../contracts/transport";
-import { loadTransport, getTransport, saveTransport } from "./services";
+import { getTransport, saveTransport } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { TransportForm } from "./form";
 import { TransportShow } from "./show";
-const columns: MasterListColumn<Transport>[] = [
+type TransportListRow=Pick<Transport,'public_id'|'active'|'name'|'gst'|'vehicleNo'|'address'|'contactNo'>;
+const columns: MasterListColumn<TransportListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "gst", label: "GSTIN", value: (record) => record.gst },
   {
@@ -58,26 +60,21 @@ export default function TransportPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Transport[]>([]);
+  const list=useRemoteModuleList<TransportListRow>('transports',kind==='list');
   const [record, setRecord] = useState<Transport>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadTransport(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getTransport(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getTransport(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -188,12 +185,13 @@ export default function TransportPage({
   return (
     <MasterListV1
       label="Transports"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/transports/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Style } from "../../../../../contracts/style";
-import { loadStyle, getStyle, saveStyle } from "./services";
+import { getStyle, saveStyle } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { StyleForm } from "./form";
 import { StyleShow } from "./show";
-const columns: MasterListColumn<Style>[] = [
+type StyleListRow=Pick<Style,'public_id'|'active'|'name'|'sortOrder'>;
+const columns: MasterListColumn<StyleListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "sortOrder", label: "Sort order", value: (record) => record.sortOrder },
   {
@@ -47,26 +49,21 @@ export default function StylePage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Style[]>([]);
+  const list=useRemoteModuleList<StyleListRow>('styles',kind==='list');
   const [record, setRecord] = useState<Style>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadStyle(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getStyle(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getStyle(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -175,12 +172,13 @@ export default function StylePage({
   return (
     <MasterListV1
       label="Styles"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/styles/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

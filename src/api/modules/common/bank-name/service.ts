@@ -1,3 +1,4 @@
+import {pageBankNameRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -16,6 +17,7 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createBankNameService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/bank-name:read');return pageBankNameRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/bank-name:read");
       return listBankName(db, context);

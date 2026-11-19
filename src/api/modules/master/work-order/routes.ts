@@ -1,3 +1,4 @@
+import {modulePageOpenApi} from '../../../../../contracts/module-page.ts';
 import { z } from "zod";
 import type { FastifyInstance } from "fastify";
 import type { ContextResolver } from "../../../database/context.ts";
@@ -10,6 +11,7 @@ export function registerWorkOrderRoutes(
   service: ReturnType<typeof createWorkOrderService>,
   resolveContext: ContextResolver,
 ) {
+  app.get('/api/v1/work-orders/page',(request,reply)=>performModule(request,reply,resolveContext,context=>service.page(context,request.query)));
   app.get("/api/v1/work-orders", (request, reply) =>
     performModule(request, reply, resolveContext, (context) =>
       service.list(context),
@@ -103,6 +105,7 @@ const requestBody = {
   content: { "application/json": { schema: inputSchema } },
 };
 export const workOrderOpenApiPaths = {
+  '/api/v1/work-orders/page':{get:modulePageOpenApi('workorderPage',["name","code","active"])},
   "/api/v1/work-orders": {
     get: operation("List", false, { type: "array", items: recordSchema }),
     post: { ...operation("Create", true, recordSchema, "201"), requestBody },

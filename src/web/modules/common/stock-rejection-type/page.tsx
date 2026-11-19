@@ -9,14 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { StockRejectionType } from "../../../../../contracts/stock-rejection-type";
-import {
-  loadStockRejectionType,
-  getStockRejectionType,
-  saveStockRejectionType,
-} from "./services";
+import { getStockRejectionType, saveStockRejectionType } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { StockRejectionTypeForm } from "./form";
 import { StockRejectionTypeShow } from "./show";
-const columns: MasterListColumn<StockRejectionType>[] = [
+type StockRejectionTypeListRow=Pick<StockRejectionType,'public_id'|'active'|'name'|'sortOrder'>;
+const columns: MasterListColumn<StockRejectionTypeListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "sortOrder", label: "Sort order", value: (record) => record.sortOrder },
   {
@@ -51,26 +49,21 @@ export default function StockRejectionTypePage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<StockRejectionType[]>([]);
+  const list=useRemoteModuleList<StockRejectionTypeListRow>('stock-rejection-types',kind==='list');
   const [record, setRecord] = useState<StockRejectionType>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadStockRejectionType(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getStockRejectionType(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getStockRejectionType(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -190,12 +183,13 @@ export default function StockRejectionTypePage({
   return (
     <MasterListV1
       label="Stock Rejection Types"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/stock-rejection-types/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

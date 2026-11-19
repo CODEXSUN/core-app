@@ -1,6 +1,6 @@
 # Core bounded Billing catalogue audit — 2026-11-19
 
-Status: release-ready; typecheck/build,16 unit/tool tests and47 PostgreSQL checks passed. Immutable0.1.5 publication pending. No deployment. Core0.1.4 remains a separate approved rollout.
+Status: immutable0.1.5 published; typecheck/build,16 unit/tool tests and47 PostgreSQL checks passed locally and tagged workflow44439163366 succeeded, including its new full SQL gate. Tagv-0.1.5 commit863c0ad58ce7d5aa1d0028d224ad8d2647f8615b. Image ghcr.io/codexsun/core-app@sha256:d08c03aac299db0d8577a462e1d77bb5ebcc6bf22340fc5b7bbb9bf188bfb76c; manifest/image ID verified. CodeShip owns rollout. Core's separate own-desk bulk failure/remediation is documented in supervisor-audit-20261119-core-lists.md for fresh0.1.6;0.1.5 tag is unchanged.
 
 ## Measured failure
 

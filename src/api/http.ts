@@ -7,6 +7,7 @@ import {
 } from "./database/context.ts";
 
 export class ConflictError extends Error {}
+export class ModulePageSizeError extends Error {}
 export async function performModule(
   request: FastifyRequest,
   reply: FastifyReply,
@@ -25,6 +26,7 @@ export async function performModule(
       return reply.code(404).send({ message: "Record not found." });
     return reply.code(status).send(result);
   } catch (error) {
+    if(error instanceof ModulePageSizeError)return reply.code(413).send({message:'This page is too large. Choose a smaller page size.'});
     if (error instanceof ModuleAccessError)
       return reply.code(403).send({ message: "Permission denied." });
     if (error instanceof ZodError)

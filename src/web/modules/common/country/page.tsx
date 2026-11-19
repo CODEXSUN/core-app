@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Country } from "../../../../../contracts/country";
-import { loadCountry, getCountry, saveCountry } from "./services";
+import { getCountry, saveCountry } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { CountryForm } from "./form";
 import { CountryShow } from "./show";
-const columns: MasterListColumn<Country>[] = [
+type CountryListRow=Pick<Country,'public_id'|'active'|'name'|'code'|'sortOrder'>;
+const columns: MasterListColumn<CountryListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "code", label: "Country code", value: (record) => record.code },
   { id: "sortOrder", label: "Sort order", value: (record) => record.sortOrder },
@@ -48,26 +50,21 @@ export default function CountryPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Country[]>([]);
+  const list=useRemoteModuleList<CountryListRow>('countries',kind==='list');
   const [record, setRecord] = useState<Country>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadCountry(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getCountry(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getCountry(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -178,12 +175,13 @@ export default function CountryPage({
   return (
     <MasterListV1
       label="Countries"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/countries/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

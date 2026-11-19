@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Brand } from "../../../../../contracts/brand";
-import { loadBrand, getBrand, saveBrand } from "./services";
+import { getBrand, saveBrand } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { BrandForm } from "./form";
 import { BrandShow } from "./show";
-const columns: MasterListColumn<Brand>[] = [
+type BrandListRow=Pick<Brand,'public_id'|'active'|'name'|'logoUrl'|'logoAlt'|'showOnStorefront'|'sortOrder'>;
+const columns: MasterListColumn<BrandListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "logoUrl", label: "Logo URL", value: (record) => record.logoUrl },
   {
@@ -58,26 +60,21 @@ export default function BrandPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Brand[]>([]);
+  const list=useRemoteModuleList<BrandListRow>('brands',kind==='list');
   const [record, setRecord] = useState<Brand>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadBrand(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getBrand(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getBrand(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -186,12 +183,13 @@ export default function BrandPage({
   return (
     <MasterListV1
       label="Brands"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/brands/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

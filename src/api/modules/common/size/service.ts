@@ -1,3 +1,4 @@
+import {pageSizeRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -11,6 +12,7 @@ import { listSize, findSize, insertSize, updateSize } from "./repository.ts";
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createSizeService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/size:read');return pageSizeRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/size:read");
       return listSize(db, context);

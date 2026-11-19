@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -165,4 +166,9 @@ export async function updatePincode(
     return true;
   });
   return changed ? findPincode(db, context, publicId) : undefined;
+}
+
+export async function pagePincodeRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('pincodes.tenant_id','=',context.tenantId).where('pincodes.deleted_at','is',null),input,{"name":{"field":"name"},"cityId":{"field":"cityName"},"area":{"field":"area"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

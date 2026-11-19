@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Product } from "../../../../../contracts/product";
-import { loadProduct, getProduct, saveProduct } from "./services";
+import { getProduct, saveProduct } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { ProductForm } from "./form";
 import { ProductShow } from "./show";
-const columns: MasterListColumn<Product>[] = [
+type ProductListRow=Pick<Product,'public_id'|'active'|'name'|'typeName'|'productCategoryName'|'productGroupName'|'hsnCodeName'>;
+const columns: MasterListColumn<ProductListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "typeId", label: "Product type", value: (record) => record.typeName },
   {
@@ -58,26 +60,21 @@ export default function ProductPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Product[]>([]);
+  const list=useRemoteModuleList<ProductListRow>('products',kind==='list');
   const [record, setRecord] = useState<Product>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadProduct(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getProduct(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getProduct(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -186,12 +183,13 @@ export default function ProductPage({
   return (
     <MasterListV1
       label="Products"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/products/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

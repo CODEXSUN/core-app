@@ -9,14 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { ContactGroup } from "../../../../../contracts/contact-group";
-import {
-  loadContactGroup,
-  getContactGroup,
-  saveContactGroup,
-} from "./services";
+import { getContactGroup, saveContactGroup } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { ContactGroupForm } from "./form";
 import { ContactGroupShow } from "./show";
-const columns: MasterListColumn<ContactGroup>[] = [
+type ContactGroupListRow=Pick<ContactGroup,'public_id'|'active'|'name'|'sortOrder'>;
+const columns: MasterListColumn<ContactGroupListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "sortOrder", label: "Sort order", value: (record) => record.sortOrder },
   {
@@ -51,26 +49,21 @@ export default function ContactGroupPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<ContactGroup[]>([]);
+  const list=useRemoteModuleList<ContactGroupListRow>('contact-groups',kind==='list');
   const [record, setRecord] = useState<ContactGroup>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadContactGroup(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getContactGroup(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getContactGroup(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -183,12 +176,13 @@ export default function ContactGroupPage({
   return (
     <MasterListV1
       label="Contact Groups"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/contact-groups/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

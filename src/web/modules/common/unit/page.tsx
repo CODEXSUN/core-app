@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Unit } from "../../../../../contracts/unit";
-import { loadUnit, getUnit, saveUnit } from "./services";
+import { getUnit, saveUnit } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { UnitForm } from "./form";
 import { UnitShow } from "./show";
-const columns: MasterListColumn<Unit>[] = [
+type UnitListRow=Pick<Unit,'public_id'|'active'|'name'|'sortOrder'>;
+const columns: MasterListColumn<UnitListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "sortOrder", label: "Sort order", value: (record) => record.sortOrder },
   {
@@ -47,26 +49,21 @@ export default function UnitPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Unit[]>([]);
+  const list=useRemoteModuleList<UnitListRow>('units',kind==='list');
   const [record, setRecord] = useState<Unit>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadUnit(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getUnit(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getUnit(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -175,12 +172,13 @@ export default function UnitPage({
   return (
     <MasterListV1
       label="Units"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/units/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -153,4 +154,9 @@ export async function updateMonth(
     return true;
   });
   return changed ? findMonth(db, context, publicId) : undefined;
+}
+
+export async function pageMonthRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('months.tenant_id','=',context.tenantId).where('months.deleted_at','is',null),input,{"name":{"field":"name"},"startDate":{"field":"startDate"},"endDate":{"field":"endDate"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

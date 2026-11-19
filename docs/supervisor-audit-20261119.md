@@ -1,5 +1,7 @@
 # Core App supervised audit — 2026-11-19
 
+Latest follow-up: immutable0.1.5 bounded Billing catalogue/setup contracts are published and verified in [catalogue audit](supervisor-audit-20261119-catalog.md). A separate measured Core own-desk3MiB collection failure is fixed in fresh0.1.6 source across all37 lists; see [Core list audit](supervisor-audit-20261119-core-lists.md) for actual bytes, tests, dependencies, compatibility and deployment status. Historical0.1.4 evidence below remains unchanged.
+
 Status: release-ready; typecheck, production frontend build, all14 unit/tool tests and all46 disposable PostgreSQL checks passed. Immutable dependency pins are framework0.2.0 at51daaa2a7bee32d0a8eca806a2b0e8a765a3e1ac, UI0.1.12 ate88945f101313051ded3557e14b0363a0a6ca906, SDK0.1.5 at8bd3a9ed00b505a3ee0bf28ce9fc531d880b3e99. Tagged publication and image workflow succeeded; exact handoff below. No Docker deployment has been performed by this app owner.
 
 ## Findings and changes

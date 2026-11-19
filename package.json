@@ -1,6 +1,6 @@
 {
   "name": "@workspace/core-app",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "type": "module",
   "engines": {
@@ -97,6 +97,7 @@
     "./contracts/contact": "./contracts/contact.ts",
     "./contracts/product": "./contracts/product.ts",
     "./contracts/work-order": "./contracts/work-order.ts",
-    "./contracts/default-company": "./contracts/default-company.ts"
+    "./contracts/default-company": "./contracts/default-company.ts",
+    "./contracts/module-page": "./contracts/module-page.ts"
   }
 }

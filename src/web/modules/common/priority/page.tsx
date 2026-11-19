@@ -9,10 +9,12 @@ import {
 } from "@workspace/ui/blocks/data-table";
 import { useNavigation } from "../../../navigation";
 import type { Priority } from "../../../../../contracts/priority";
-import { loadPriority, getPriority, savePriority } from "./services";
+import { getPriority, savePriority } from "./services";
+import {useRemoteModuleList} from '../../shared/use-remote-module-list';
 import { PriorityForm } from "./form";
 import { PriorityShow } from "./show";
-const columns: MasterListColumn<Priority>[] = [
+type PriorityListRow=Pick<Priority,'public_id'|'active'|'name'|'colour'|'tag'|'sortOrder'>;
+const columns: MasterListColumn<PriorityListRow>[] = [
   { id: "name", label: "Name", value: (record) => record.name },
   { id: "colour", label: "Colour", value: (record) => record.colour },
   { id: "tag", label: "Tag", value: (record) => record.tag },
@@ -49,26 +51,21 @@ export default function PriorityPage({
             : "show"
           : "missing";
   const publicId = match?.[1];
-  const [records, setRecords] = useState<Priority[]>([]);
+  const list=useRemoteModuleList<PriorityListRow>('priorities',kind==='list');
   const [record, setRecord] = useState<Priority>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (kind === "new" || kind === "missing") return;
+    if (kind === "new" || kind === "missing" || kind === "list") return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
     setRecord(undefined);
-    const request =
-      kind === "list"
-        ? loadPriority(controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecords(value);
-          })
-        : getPriority(publicId!, controller.signal).then((value) => {
-            if (!controller.signal.aborted) setRecord(value);
-          });
+    const request = getPriority(publicId!, controller.signal).then((value) => {
+      if (!controller.signal.aborted) setRecord(value);
+    });
     request
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);
@@ -179,12 +176,13 @@ export default function PriorityPage({
   return (
     <MasterListV1
       label="Priorities"
-      data={records}
+      data={list.rows}
+      remote={list.remote}
       columns={columns}
       getRowId={(value) => value.public_id}
-      loading={loading}
-      error={error || undefined}
-      onRetry={() => setAttempt((value) => value + 1)}
+      loading={list.loading}
+      error={list.error || undefined}
+      onRetry={list.retry}
       onOpen={(value) => navigate("/priorities/" + value.public_id)}
       filterOptions={[
         { id: "active", label: "Active", matches: (value) => value.active },

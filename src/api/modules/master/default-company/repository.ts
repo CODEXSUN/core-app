@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -197,4 +198,9 @@ export async function updateDefaultCompany(
     return true;
   });
   return changed ? findDefaultCompany(db, context, publicId) : undefined;
+}
+
+export async function pageDefaultCompanyRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('default_companies.tenant_id','=',context.tenantId).where('default_companies.deleted_at','is',null),input,{"name":{"field":"name"},"companyId":{"field":"companyName"},"financialYearId":{"field":"financialYearName"},"landingApp":{"field":"landingApp"},"active":{"field":"active","boolean":true}});
+ return result;
 }

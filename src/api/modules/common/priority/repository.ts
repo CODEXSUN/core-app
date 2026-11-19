@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -156,4 +157,9 @@ export async function updatePriority(
     return true;
   });
   return changed ? findPriority(db, context, publicId) : undefined;
+}
+
+export async function pagePriorityRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('priorities.tenant_id','=',context.tenantId).where('priorities.deleted_at','is',null),input,{"name":{"field":"name"},"colour":{"field":"colour"},"tag":{"field":"tag"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

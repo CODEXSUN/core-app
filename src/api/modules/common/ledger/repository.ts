@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -164,4 +165,9 @@ export async function updateLedger(
     return true;
   });
   return changed ? findLedger(db, context, publicId) : undefined;
+}
+
+export async function pageLedgerRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('ledgers.tenant_id','=',context.tenantId).where('ledgers.deleted_at','is',null),input,{"name":{"field":"name"},"ledgerGroupId":{"field":"ledgerGroupName"},"sortOrder":{"field":"sortOrder"},"active":{"field":"active","boolean":true}});
+ return result;
 }

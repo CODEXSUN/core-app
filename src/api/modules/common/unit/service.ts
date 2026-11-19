@@ -1,3 +1,4 @@
+import {pageUnitRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -11,6 +12,7 @@ import { listUnit, findUnit, insertUnit, updateUnit } from "./repository.ts";
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createUnitService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/unit:read');return pageUnitRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/unit:read");
       return listUnit(db, context);

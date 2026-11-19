@@ -1,3 +1,4 @@
+import {pageProductCategoryRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
 import type { Database } from "../../../database/schema.ts";
@@ -16,6 +17,7 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createProductCategoryService(db: Kysely<Database>) {
   return {
+    page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/product-category:read');return pageProductCategoryRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/product-category:read");
       return listProductCategory(db, context);

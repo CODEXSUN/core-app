@@ -1,3 +1,4 @@
+import {pageModuleRecords} from '../../../database/page.ts';
 import { assertFinancialYearNotSelected } from "../default-company/index.ts";
 import { randomInt } from "node:crypto";
 import { sql, type Kysely } from "kysely";
@@ -187,4 +188,9 @@ export async function updateFinancialYear(
     return true;
   });
   return changed ? findFinancialYear(db, context, publicId) : undefined;
+}
+
+export async function pageFinancialYearRecords(db:Kysely<Database>,context:ModuleContext,input:unknown){
+ const result=await pageModuleRecords(db,query(db).where('financial_years.tenant_id','=',context.tenantId).where('financial_years.deleted_at','is',null),input,{"name":{"field":"name"},"startDate":{"field":"startDate"},"endDate":{"field":"endDate"},"isCurrent":{"field":"isCurrent","boolean":true},"active":{"field":"active","boolean":true}});
+ return result;
 }
