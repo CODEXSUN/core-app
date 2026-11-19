@@ -2,6 +2,8 @@
 
 Status: immutable0.1.6 release-ready for CodeShip; tagged workflow44441018652 succeeded and release/image manifest was retrieved and verified. Typecheck/build,24 unit/tool checks and47 PostgreSQL checks passed locally and in tagged CI. CodeShip deployment/live audit remains separate. No migration or live data/process change by this source owner.
 
+Deployment follow-up: selected Core0.1.6 update and verification subsequently completed through CodeShip-owned tooling under the human-authorized owner-execution override. Exact live image/binding, preservation checks, three roles, tenant/origin/permission checks and remaining limits are recorded in [local deployment](deployments/local-core-0.1.6-20261119.md). No sibling/PG operation was performed.
+
 ## Measured defect and result
 
 The real disposable PostgreSQL fixture contains5000 contacts and5000 products with valid76/85-character commercial names. Core's own ContactPage/ProductPage called legacy loadContact/loadProduct, fetching the full ordinary collection before local MasterList processing. Actual responses: contacts3,058,894 bytes, products3,095,001 bytes. Both produced502 through the actual Platform gateway response reader, which enforces1,048,576 bytes. This is measured fixture evidence, not a hypothetical catalogue size or live production data.
