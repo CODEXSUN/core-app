@@ -1,6 +1,6 @@
 # Core App supervised audit — 2026-11-19
 
-Status: release-ready; typecheck, production frontend build, all14 unit/tool tests and all46 disposable PostgreSQL checks passed. Immutable dependency pins are framework0.2.0 at51daaa2a7bee32d0a8eca806a2b0e8a765a3e1ac, UI0.1.12 ate88945f101313051ded3557e14b0363a0a6ca906, SDK0.1.5 at8bd3a9ed00b505a3ee0bf28ce9fc531d880b3e99. Tagged publication is next. No Docker deployment has been performed by this app owner.
+Status: release-ready; typecheck, production frontend build, all14 unit/tool tests and all46 disposable PostgreSQL checks passed. Immutable dependency pins are framework0.2.0 at51daaa2a7bee32d0a8eca806a2b0e8a765a3e1ac, UI0.1.12 ate88945f101313051ded3557e14b0363a0a6ca906, SDK0.1.5 at8bd3a9ed00b505a3ee0bf28ce9fc531d880b3e99. Tagged publication and image workflow succeeded; exact handoff below. No Docker deployment has been performed by this app owner.
 
 ## Findings and changes
 
@@ -21,7 +21,7 @@ The endpoint remains read-only and uses existing scoped Core records. It does no
 
 ## Release handoff
 
-Prepared patch0.1.4; successful tagged workflow/manifest and CodeShip deployment remain separate stages. Native processes, database contents and unrelated Compose/work-record changes are preserved. No source change is being described as already live. SQL checks cover all37 modules, scoped read/write permission boundaries, foreign-tenant IDs, aggregate invalid/foreign selections, reference constraints, concurrent semantics, immutable upgrade preservation, repeatable seed identities and refused destructive rollback. The aggregate auth test rejects each missing constituent permission before database access; the client test proves one HTTP request and validates selection IDs.
+Published patch0.1.4 with successful tagged workflow/manifest; CodeShip deployment remains a separate stage. Native processes, database contents and unrelated Compose/work-record changes are preserved. No source change is being described as already live. SQL checks cover all37 modules, scoped read/write permission boundaries, foreign-tenant IDs, aggregate invalid/foreign selections, reference constraints, concurrent semantics, immutable upgrade preservation, repeatable seed identities and refused destructive rollback. The aggregate auth test rejects each missing constituent permission before database access; the client test proves one HTTP request and validates selection IDs.
 
 Additional real startup test: a loopback transport to the existing isolated *_test PostgreSQL database starts100ms late. The finite connection probe retries ECONNREFUSED, succeeds after two attempts (323ms recorded), and cleans its pool/socket resources. No native/Docker service or database was restarted.
 
