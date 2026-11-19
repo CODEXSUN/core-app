@@ -19,6 +19,18 @@ test('Billing aggregate client validates selections and sends one scoped HTTP re
  assert.equal(calls.length,1);
 });
 
+test('bounded Billing clients validate catalogue queries, IDs and explicit currency selection',async()=>{
+ const calls:string[]=[];const core=createCoreClient({baseUrl:'http://127.0.0.1:4345',fetcher:async input=>{calls.push(String(input));return Response.json({});}});
+ await core.getBillingBootstrap({currencyCodes:['INR','USD']});
+ await core.searchBillingContacts({q:'beyond first page',page:3,pageSize:100,role:'customer'});
+ await core.searchBillingProducts({q:'fabric',page:2,pageSize:25});
+ await core.getBillingContact('aaaaaaaa');await core.getBillingProduct('bbbbbbbb');
+ assert.match(calls[0],/billing-bootstrap\?currencyCodes=INR%2CUSD$/);assert.match(calls[1],/q=beyond\+first\+page&page=3&pageSize=100&role=customer$/);
+ for(const query of [{page:0},{page:-1},{pageSize:101},{q:'a'.repeat(81)},{sort:'name'},{tenantId:'foreign'}])assert.throws(()=>core.searchBillingProducts(query as any));
+ for(const codes of [['INR','INR'],['inr'],Array.from({length:11},()=> 'USD')])assert.throws(()=>core.getBillingBootstrap({currencyCodes:codes}));
+ await assert.rejects(core.getBillingContact('../foreign'));assert.equal(calls.length,5);
+});
+
 test("Billing read client uses server credentials, validates IDs and reports failures", async () => {
   const token = "test-only-key-".repeat(4);
   const requests: { url: string; authorization: string | null }[] = [];

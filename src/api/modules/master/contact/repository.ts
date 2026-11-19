@@ -4,10 +4,30 @@ import type { Database } from "../../../database/schema.ts";
 import type { ModuleContext } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import type { ContactValues } from "../../../../../contracts/contact.ts";
+import type {BillingContactQuery} from '../../../../../contracts/billing-catalog.ts';
+import {contactValuesSchema} from '../../../../../contracts/contact.ts';
 import { resolveContactTypeReference } from "../../common/contact-type/index.ts";
 import { resolveContactGroupReference } from "../../common/contact-group/index.ts";
 import { validatePartyReferences } from "../../../party-references.ts";
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+function billingQuery(db:Kysely<Database>,context:ModuleContext,input:BillingContactQuery){
+ let selected=db.selectFrom('contacts').where('contacts.tenant_id','=',context.tenantId).where('contacts.deleted_at','is',null).where('contacts.active','=',true);
+ if(input.role)selected=selected.where('contacts.role','in',input.role==='customer'||input.role==='supplier'?[input.role,'both']:[input.role]);
+ if(input.q){const pattern='%'+input.q.replace(/[\\%_]/g,value=>'\\'+value)+'%';selected=selected.where(eb=>eb.or([eb('contacts.name','ilike',pattern),eb('contacts.code','ilike',pattern)]));}
+ return selected;
+}
+export async function searchBillingContacts(db:Kysely<Database>,context:ModuleContext,input:BillingContactQuery&{page:number;pageSize:number}){
+ const selected=billingQuery(db,context,input);
+ const [rows,count]=await Promise.all([
+  selected.select(['contacts.public_id','contacts.name','contacts.role','contacts.active']).orderBy('contacts.name').orderBy('contacts.public_id').offset((input.page-1)*input.pageSize).limit(input.pageSize).execute(),
+  selected.select(eb=>eb.fn.countAll().as('total')).executeTakeFirstOrThrow(),
+ ]);
+ return {rows:rows.map(row=>({...row,role:contactValuesSchema.shape.role.parse(row.role)})),total:Number(count.total),page:input.page,pageSize:input.pageSize};
+}
+export async function findBillingContact(db:Kysely<Database>,context:ModuleContext,publicId:string){
+ const row=await billingQuery(db,context,{}).where('contacts.public_id','=',publicId).select(['contacts.public_id','contacts.name','contacts.role','contacts.active']).executeTakeFirst();
+ return row?{...row,role:contactValuesSchema.shape.role.parse(row.role)}:undefined;
+}
 export function generateContactPublicId() {
   return Array.from(
     { length: 8 },

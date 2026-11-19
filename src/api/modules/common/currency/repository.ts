@@ -4,6 +4,11 @@ import type { Database } from "../../../database/schema.ts";
 import type { ModuleContext } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import type { CurrencyValues } from "../../../../../contracts/currency.ts";
+export async function activeCurrencyExists(db:Kysely<Database>,context:ModuleContext){return !!await db.selectFrom('currencies').select('public_id').where('tenant_id','=',context.tenantId).where('deleted_at','is',null).where('active','=',true).limit(1).executeTakeFirst();}
+export function selectBillingCurrencies(db:Kysely<Database>,context:ModuleContext,codes:string[]){
+ if(!codes.length)return Promise.resolve([]);
+ return db.selectFrom('currencies').select(['public_id','name','symbol','active']).where('tenant_id','=',context.tenantId).where('deleted_at','is',null).where('active','=',true).where('name','in',codes).orderBy('name').orderBy('public_id').execute();
+}
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 export function generateCurrencyPublicId() {

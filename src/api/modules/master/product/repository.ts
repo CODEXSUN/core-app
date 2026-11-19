@@ -4,6 +4,7 @@ import type { Database } from "../../../database/schema.ts";
 import type { ModuleContext } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import type { ProductValues } from "../../../../../contracts/product.ts";
+import type {BillingLookupQuery} from '../../../../../contracts/billing-catalog.ts';
 import { resolveProductTypeReference } from "../../common/product-type/index.ts";
 import { resolveProductCategoryReference } from "../../common/product-category/index.ts";
 import { resolveProductGroupReference } from "../../common/product-group/index.ts";
@@ -13,6 +14,20 @@ import { resolveTaxReference } from "../../common/tax/index.ts";
 import { resolveBrandReference } from "../../common/brand/index.ts";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+function billingQuery(db:Kysely<Database>,context:ModuleContext,input:BillingLookupQuery){
+ let selected=db.selectFrom('products').innerJoin('units as billing_unit',join=>join.onRef('billing_unit.id','=','products.unit_id').onRef('billing_unit.tenant_id','=','products.tenant_id')).where('products.tenant_id','=',context.tenantId).where('products.deleted_at','is',null).where('products.active','=',true).where('billing_unit.deleted_at','is',null).where('billing_unit.active','=',true);
+ if(input.q){const pattern='%'+input.q.replace(/[\\%_]/g,value=>'\\'+value)+'%';selected=selected.where('products.name','ilike',pattern);}
+ return selected;
+}
+export async function searchBillingProducts(db:Kysely<Database>,context:ModuleContext,input:BillingLookupQuery&{page:number;pageSize:number}){
+ const selected=billingQuery(db,context,input);
+ const [rows,count]=await Promise.all([
+  selected.select(['products.public_id','products.name','products.active','billing_unit.name as unitName']).orderBy('products.name').orderBy('products.public_id').offset((input.page-1)*input.pageSize).limit(input.pageSize).execute(),
+  selected.select(eb=>eb.fn.countAll().as('total')).executeTakeFirstOrThrow(),
+ ]);
+ return {rows,total:Number(count.total),page:input.page,pageSize:input.pageSize};
+}
+export function findBillingProduct(db:Kysely<Database>,context:ModuleContext,id:string){return billingQuery(db,context,{}).where('products.public_id','=',id).select(['products.public_id','products.name','products.active','billing_unit.name as unitName']).executeTakeFirst();}
 export function generateProductPublicId() {
   return Array.from(
     { length: 8 },

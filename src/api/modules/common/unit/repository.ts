@@ -6,6 +6,7 @@ import { ConflictError } from "../../../http.ts";
 import type { UnitValues } from "../../../../../contracts/unit.ts";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+export async function activeUnitExists(db:Kysely<Database>,context:ModuleContext){return !!await db.selectFrom('units').select('public_id').where('tenant_id','=',context.tenantId).where('deleted_at','is',null).where('active','=',true).limit(1).executeTakeFirst();}
 export function generateUnitPublicId() {
   return Array.from(
     { length: 8 },

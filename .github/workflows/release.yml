@@ -60,6 +60,11 @@ jobs:
           (cd "$CONTEXT/packages/ui" && npm ci --ignore-scripts --no-audit && npm run build)
           (cd "$CONTEXT/$OWNER" && npm ci --ignore-scripts --no-audit && npm run typecheck && npm run build && npm test && npm run check:versions)
           if [ "$OWNER" = apps/platform ]; then (cd "$CONTEXT/$OWNER" && npm run test:postgres); fi
+          if [ "$OWNER" = apps/core-app ]; then
+            (cd "$CONTEXT/$OWNER" && node --input-type=module -e "import pg from 'pg'; const db=new pg.Client(); await db.connect(); try { await db.query('CREATE DATABASE core_app_test'); } finally { await db.end(); }")
+            printf 'NODE_ENV=test\nCORE_APP_DATABASE_URL=postgresql://codeitz:disposable-ci-only@127.0.0.1:5432/core_app_test\n' > "$CONTEXT/$OWNER/.env.test"
+            (cd "$CONTEXT/$OWNER" && npm run test:database)
+          fi
           docker build --build-arg "NODE_IMAGE=$BASE" --build-arg "APP_VERSION=$VERSION" --build-arg "SOURCE_DIGEST=$GITHUB_SHA" --label "org.opencontainers.image.version=$VERSION" --label "org.opencontainers.image.revision=$GITHUB_SHA" --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" -f "$CONTEXT/$OWNER/.container/Dockerfile" -t "$IMAGE:$GITHUB_REF_NAME" "$CONTEXT"
       - name: Publish immutable release image and manifest
         env:

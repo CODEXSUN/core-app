@@ -18,3 +18,13 @@ test('aggregate denies a missing constituent permission before storage access',a
   }
  }finally{await app.close();}
 });
+
+test('bounded bootstrap and lookup permissions fail before accessing storage',async()=>{
+ const app=createHttpServer({name:'catalogue-denial',logLevel:'silent'});let current:ModuleContext|null=null;
+ const db=new Proxy({},{get(){throw Error('Denied calls must not access storage');}});registerBillingContextRoutes(app,db as any,async()=>current);
+ try{
+  for(const url of ['/api/v1/billing-bootstrap','/api/v1/billing-lookups/contacts','/api/v1/billing-lookups/products','/api/v1/billing-lookups/contacts/aaaaaaaa','/api/v1/billing-lookups/products/aaaaaaaa'])assert.equal((await app.inject(url)).statusCode,401);
+  current={actorId:'test',tenantId:'tenant-a',permissions:[]};
+  for(const url of ['/api/v1/billing-bootstrap','/api/v1/billing-lookups/contacts','/api/v1/billing-lookups/products','/api/v1/billing-lookups/contacts/aaaaaaaa','/api/v1/billing-lookups/products/aaaaaaaa'])assert.equal((await app.inject(url)).statusCode,403);
+ }finally{await app.close();}
+});

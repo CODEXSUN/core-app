@@ -6,6 +6,11 @@ import {
 } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import { findInternalCurrency, listCurrency } from "./repository.ts";
+import {selectBillingCurrencies} from './repository.ts';
+import {activeCurrencyExists} from './repository.ts';
+import {billingBootstrapSelectionSchema} from '../../../../../contracts/billing-catalog.ts';
+export function lookupBillingCurrencies(db:Kysely<Database>,context:ModuleContext,codes:unknown){requireModulePermission(context,'common/currency:read');return selectBillingCurrencies(db,context,billingBootstrapSelectionSchema.shape.currencyCodes.parse(codes));}
+export function hasActiveCurrency(db:Kysely<Database>,context:ModuleContext){requireModulePermission(context,'common/currency:read');return activeCurrencyExists(db,context);}
 export async function listCurrencyRecords(
   db: Kysely<Database>,
   context: ModuleContext,

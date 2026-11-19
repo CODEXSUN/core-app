@@ -6,6 +6,10 @@ import {
 } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import { findInternalProduct, listProduct } from "./repository.ts";
+import {searchBillingProducts,findBillingProduct} from './repository.ts';
+import {billingLookupQuerySchema,billingLookupIdSchema} from '../../../../../contracts/billing-catalog.ts';
+export function lookupBillingProducts(db:Kysely<Database>,context:ModuleContext,input:unknown){requireModulePermission(context,'master/product:read');return searchBillingProducts(db,context,billingLookupQuerySchema.parse(input));}
+export function lookupBillingProduct(db:Kysely<Database>,context:ModuleContext,id:string){requireModulePermission(context,'master/product:read');return findBillingProduct(db,context,billingLookupIdSchema.parse(id));}
 export async function listProductRecords(
   db: Kysely<Database>,
   context: ModuleContext,

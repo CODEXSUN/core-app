@@ -37,6 +37,7 @@ import type { WorkOrder } from "./work-order.ts";
 import type { DefaultCompany } from "./default-company.ts";
 import type { OrganisationContext } from "./organisation-context.ts";
 import {billingContextSelectionSchema,type BillingContextSelection,type BillingCoreContext} from './billing-context.ts';
+import {billingBootstrapSelectionSchema,billingLookupQuerySchema,billingContactQuerySchema,type BillingBootstrapSelection,type BillingBootstrap,type BillingLookupQuery,type BillingContactQuery,type BillingLookupPage,type BillingContactOption,type BillingProductOption,type BillingSetupStatus} from './billing-catalog.ts';
 // Server-to-server client. Keep the token in Billing's private server environment.
 // The API, not a tenant argument or request header, determines the authorized scope.
 export function createCoreClient({
@@ -76,6 +77,16 @@ export function createCoreClient({
     return response.json();
   }
   return {
+    getBillingSetupStatus:()=>read<BillingSetupStatus>('billing-setup-status'),
+    getBillingBootstrap:(selection:BillingBootstrapSelection={})=>{
+      const value=billingBootstrapSelectionSchema.parse(selection),query=new URLSearchParams();
+      if(value.companyId)query.set('companyId',value.companyId);if(value.financialYearId)query.set('financialYearId',value.financialYearId);if(value.currencyCodes.length)query.set('currencyCodes',value.currencyCodes.join(','));
+      return read<BillingBootstrap>('billing-bootstrap'+(query.size?'?'+query:''));
+    },
+    searchBillingContacts:(input:BillingContactQuery={})=>{const value=billingContactQuerySchema.parse(input),query=new URLSearchParams(Object.entries(value).map(([key,value])=>[key,String(value)]));return read<BillingLookupPage<BillingContactOption>>('billing-lookups/contacts?'+query);},
+    searchBillingProducts:(input:BillingLookupQuery={})=>{const value=billingLookupQuerySchema.parse(input),query=new URLSearchParams(Object.entries(value).map(([key,value])=>[key,String(value)]));return read<BillingLookupPage<BillingProductOption>>('billing-lookups/products?'+query);},
+    getBillingContact:(publicId:string)=>read<BillingContactOption>('billing-lookups/contacts',publicId),
+    getBillingProduct:(publicId:string)=>read<BillingProductOption>('billing-lookups/products',publicId),
     getBillingContext:(selection:BillingContextSelection={})=>{
       const value=billingContextSelectionSchema.parse(selection),query=new URLSearchParams(value).toString();
       return read<BillingCoreContext>('billing-context'+(query?'?'+query:''));

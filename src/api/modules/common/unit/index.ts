@@ -6,6 +6,8 @@ import {
 } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import { findInternalUnit, listUnit } from "./repository.ts";
+import {activeUnitExists} from './repository.ts';
+export function hasActiveUnit(db:Kysely<Database>,context:ModuleContext){requireModulePermission(context,'common/unit:read');return activeUnitExists(db,context);}
 export async function listUnitRecords(
   db: Kysely<Database>,
   context: ModuleContext,

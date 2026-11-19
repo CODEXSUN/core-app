@@ -2,13 +2,29 @@
 
 ## Version State
 
-Current version: 0.1.4
+Current version: 0.1.5
 
-Release tag: v-0.1.4
+Release tag: v-0.1.5
 
-Changelog label: v 0.1.4
+Changelog label: v 0.1.5
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.5
+
+### [v 0.1.5] 2026-11-19 - Bound Billing catalogue lookups and setup checks
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.5.
+- Add lean Billing bootstrap, explicit bounded currency selection, SQL-paginated active contact/product lookups and selected-ID reads with trusted tenant/permission checks. Keep existing bulk/read contracts unchanged; do not truncate catalogues.
+- Replace four setup reads with one bounded status contract preserving original constituent permissions and missing-default behavior.
+- Verified 5000 contacts plus 5000 products: former Billing projection1,340,337 bytes fails the actual gateway reader; bootstrap715 bytes and 100-row pages14,347/15,347 bytes pass.120 concurrent fixture SQL lookup requests preserve scope and response bounds.
+- Typecheck/build,16 unit/tool tests and47 PostgreSQL checks pass. Release CI now runs the full disposable Core database suite. No schema migration, live data changes or deployment.
 
 ## v-0.1.4
 

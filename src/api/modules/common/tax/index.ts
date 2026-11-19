@@ -6,6 +6,8 @@ import {
 } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import { findInternalTax, listTax } from "./repository.ts";
+import {activeTaxExists} from './repository.ts';
+export function hasActiveTax(db:Kysely<Database>,context:ModuleContext){requireModulePermission(context,'common/tax:read');return activeTaxExists(db,context);}
 export async function listTaxRecords(
   db: Kysely<Database>,
   context: ModuleContext,

@@ -6,6 +6,7 @@ import { ConflictError } from "../../../http.ts";
 import type { TaxValues } from "../../../../../contracts/tax.ts";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+export async function activeTaxExists(db:Kysely<Database>,context:ModuleContext){return !!await db.selectFrom('taxes').select('public_id').where('tenant_id','=',context.tenantId).where('deleted_at','is',null).where('active','=',true).limit(1).executeTakeFirst();}
 export function generateTaxPublicId() {
   return Array.from(
     { length: 8 },

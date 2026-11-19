@@ -1,5 +1,5 @@
-# v-0.1.4
+# v-0.1.5
 
-Reduce Billing's six Core context reads to one authenticated aggregate with tenant-scoped module permissions and validated company/year selections. Preserve write-time validation and Billing-owned actor policies. Expand dashboard content width with responsive padding. Bound transient PostgreSQL startup waiting without running migrations/seeds; incompatible schema/configuration remains fatal. Startup failure closes the connection pool.
+Add a lean Billing bootstrap and bounded, searchable active contact/product lookup pages with exact selected-ID resolution. Currency selection is explicit and at most10 codes; Core owns no Billing currency policy. Keep previous bulk contracts compatible without silent truncation. Add one bounded setup-readiness contract preserving original permission and missing-default semantics. Billing retains actor/company/year policy and write-time reference validation.
 
-Typecheck/build, 14 unit/tool tests and 46 PostgreSQL checks pass. No schema or data migration. Shared dependency pins and successful tagged workflow/manifest are required before CodeShip deployment. Production latency and mobile visual checks are not inferred from source tests.
+Typecheck/build,16 unit/tool tests and47 PostgreSQL checks pass. A real5000-contact/5000-product fixture reproduces the former1,340,337-byte outer Billing failure; the actual gateway reader accepts new715-byte bootstrap and14,347/15,347-byte100-row pages.120 parallel fixture SQL lookups retain scope and bounds. These are not production100-user throughput claims. No schema/data migration or live changes. Release CI runs the full disposable PostgreSQL suite; successful tagged workflow/manifest and ordered CodeShip deployment remain required.

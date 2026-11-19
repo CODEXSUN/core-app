@@ -6,6 +6,10 @@ import {
 } from "../../../database/context.ts";
 import { ConflictError } from "../../../http.ts";
 import { findInternalContact, listContact } from "./repository.ts";
+import {searchBillingContacts,findBillingContact} from './repository.ts';
+import {billingContactQuerySchema,billingLookupIdSchema} from '../../../../../contracts/billing-catalog.ts';
+export function lookupBillingContacts(db:Kysely<Database>,context:ModuleContext,input:unknown){requireModulePermission(context,'master/contact:read');return searchBillingContacts(db,context,billingContactQuerySchema.parse(input));}
+export function lookupBillingContact(db:Kysely<Database>,context:ModuleContext,id:string){requireModulePermission(context,'master/contact:read');return findBillingContact(db,context,billingLookupIdSchema.parse(id));}
 export async function listContactRecords(
   db: Kysely<Database>,
   context: ModuleContext,

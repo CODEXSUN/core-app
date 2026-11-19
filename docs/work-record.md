@@ -125,3 +125,8 @@ Added a tenant-scoped read-only Billing aggregate using existing public module b
 Final verification: all46 PostgreSQL checks including the real startup transport recovery passed. Release0.1.4 pins published framework0.2.0, UI0.1.12 and SDK0.1.5; no schema migration.
 
 Verified release: v-0.1.4 at aa7ba24f38e86d0bdbababa2c452a7747e72600a; workflow44432363908 succeeded and immutable image/manifest were verified. CodeShip handoff is recorded in supervisor-audit-20261119.md; Core must deploy before consuming Billing. Live speedup and visual checks are not claimed before rollout.
+
+
+## 2026-11-19 — Bounded Billing catalogue and setup contracts
+
+Measured valid long5000-contact/5000-product fixture: previous Billing projection1,340,337 bytes exceeds Platform1MiB and returned502 through its actual gateway reader. Added lean bootstrap715 bytes, explicit caller-selected currencies(max10), SQL-paginated active contact/product options(max100), selected-ID resolution and exact totals with stableordering. Existing bulk contracts remain unchanged, no silent truncation. Added bounded setup status via scoped active-existence queries with original conditional permissions. Billing actor/company/year and write-time validation remain Billing-owned. Typecheck/build,16unit/tool and47PostgreSQL checks passed, including120parallel scopedSQLlookups and foreign/inactive/role/query/currency denials. TaggedCI now runs the complete disposable Core PostgreSQL suite. No migration, reset/seed, live data write, process restart or deployment. Full measurement/contract/handoff: supervisor-audit-20261119-catalog.md.
