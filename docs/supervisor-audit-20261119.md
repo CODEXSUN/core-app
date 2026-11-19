@@ -1,12 +1,12 @@
 # Core App supervised audit — 2026-11-19
 
-Status: source-verified; typecheck, production frontend build, all13 unit/tool tests and all45 disposable PostgreSQL checks passed. Pinned dependency release and tagged publication remain pending. No Docker deployment has been performed by this app owner.
+Status: release-ready; typecheck, production frontend build, all14 unit/tool tests and all46 disposable PostgreSQL checks passed. Immutable dependency pins are framework0.2.0 at51daaa2a7bee32d0a8eca806a2b0e8a765a3e1ac, UI0.1.12 ate88945f101313051ded3557e14b0363a0a6ca906, SDK0.1.5 at8bd3a9ed00b505a3ee0bf28ce9fc531d880b3e99. Tagged publication is next. No Docker deployment has been performed by this app owner.
 
 ## Findings and changes
 
 - Billing's measured 1.4–1.7 second context path performs organisation then five Core HTTP reads. Added a purpose-built read-only Core aggregate so Billing can make one delegated read with one authenticated context. No cross-request authorization cache or new permission bypass.
 - Core's home/detail shell imposed max-w-7xl. Removed the arbitrary dashboard width cap, retained min-w-0 and responsive padding. Forms keep their deliberate own reading widths. Mobile visual verification is pending.
-- Startup depends on the generic framework and shared UI recovery work being published by their owners; Core already uses WorkspaceAccessGate and the framework server. Those implementations are not copied into Core.
+- Adopted the public framework waitForReadiness helper around a finite PostgreSQL SELECT1 probe before listening. Only known temporary connection/recovery errors retry; invalid credentials, missing schema/database, permission and configuration errors do not. Existing schema readiness runs separately and never migrates/seeds. Failed startup closes its pool. Core already uses WorkspaceAccessGate; its shared retry implementation remains with the UI owner rather than copied here.
 - Module-local migration files and discovery already provide unique sortable names; Kysely owns ordered history/locking, and explicit migration/seed commands remain separate from startup. This change adds no migration and rewrites no applied history. Existing upgrade/seeding/isolation checks are rerun on disposable schemas.
 
 ## Billing public contract
@@ -21,4 +21,6 @@ The endpoint remains read-only and uses existing scoped Core records. It does no
 
 ## Release handoff
 
-Pending dependency owner SHAs, patch/tag, successful workflow/manifest, and CodeShip deployment. Native processes, database contents and unrelated Compose/work-record changes are preserved. No source change is being described as already live. SQL checks cover all37 modules, scoped read/write permission boundaries, foreign-tenant IDs, aggregate invalid/foreign selections, reference constraints, concurrent semantics, immutable upgrade preservation, repeatable seed identities and refused destructive rollback. The aggregate auth test rejects each missing constituent permission before database access; the client test proves one HTTP request and validates selection IDs.
+Prepared patch0.1.4; successful tagged workflow/manifest and CodeShip deployment remain separate stages. Native processes, database contents and unrelated Compose/work-record changes are preserved. No source change is being described as already live. SQL checks cover all37 modules, scoped read/write permission boundaries, foreign-tenant IDs, aggregate invalid/foreign selections, reference constraints, concurrent semantics, immutable upgrade preservation, repeatable seed identities and refused destructive rollback. The aggregate auth test rejects each missing constituent permission before database access; the client test proves one HTTP request and validates selection IDs.
+
+Additional real startup test: a loopback transport to the existing isolated *_test PostgreSQL database starts100ms late. The finite connection probe retries ECONNREFUSED, succeeds after two attempts (323ms recorded), and cleans its pool/socket resources. No native/Docker service or database was restarted.

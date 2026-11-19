@@ -6,6 +6,29 @@ import { withTestDatabase } from "./database-harness.ts";
 import { coreCases } from "./core-module-cases.ts";
 import { seedModules } from "../src/api/database/seed.ts";
 import { createMigrator, migrate } from "../src/api/database/migrate.ts";
+import net from 'node:net';
+import {openDatabase} from '../src/api/database/connection.ts';
+import {waitForCoreDatabase} from '../src/api/database/startup.ts';
+
+test('Core startup waits for its temporary PostgreSQL transport and closes cleanly after recovery',async()=>{
+ assert.equal(process.env.NODE_ENV,'test');
+ const target=new URL(process.env.CORE_APP_DATABASE_URL!);assert.ok(target.pathname.endsWith('_test'));
+ const sockets=new Set<net.Socket>();
+ const bridge=net.createServer(socket=>{
+  const remote=net.connect(Number(target.port||5432),target.hostname);sockets.add(socket);sockets.add(remote);
+  socket.pipe(remote).pipe(socket);socket.on('error',()=>remote.destroy());remote.on('error',()=>socket.destroy());
+  socket.on('close',()=>{sockets.delete(socket);remote.destroy();});remote.on('close',()=>sockets.delete(remote));
+ });
+ await new Promise<void>(resolve=>bridge.listen(0,'127.0.0.1',resolve));
+ const port=(bridge.address() as net.AddressInfo).port;await new Promise<void>(resolve=>bridge.close(()=>resolve()));
+ const url=new URL(target);url.hostname='127.0.0.1';url.port=String(port);
+ const db=openDatabase({...process.env,CORE_APP_DATABASE_URL:url.href});let timer:ReturnType<typeof setTimeout>|undefined;
+ try{
+  const waiting=waitForCoreDatabase(db);
+  timer=setTimeout(()=>bridge.listen(port,'127.0.0.1'),100);
+  const result=await waiting;assert.ok(result.attempts>=2,'connection refusal is retried until the dependency transport is ready');
+ }finally{if(timer)clearTimeout(timer);await db.destroy();for(const socket of sockets)socket.destroy();if(bridge.listening)await new Promise<void>(resolve=>bridge.close(()=>resolve()));}
+});
 
 test("all 37 Core modules, references, seeds and upgrade recovery", async (t) => {
   await withTestDatabase(async ({ db, app, headersA, headersB, reader }) => {

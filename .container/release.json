@@ -9,19 +9,19 @@
     {
       "path": "foundation/framework",
       "repository": "CODEXSUN/framework",
-      "commit": "2d5c45e02855ab8553f403a728bd8ec0c3d84a95",
+      "commit": "51daaa2a7bee32d0a8eca806a2b0e8a765a3e1ac",
       "sshSecret": "RELEASE_FRAMEWORK_KEY"
     },
     {
       "path": "packages/ui",
       "repository": "CODEXSUN/ui",
-      "commit": "fe898c0678bb8335a5825f42299458af69e8c1d6",
+      "commit": "e88945f101313051ded3557e14b0363a0a6ca906",
       "sshSecret": "RELEASE_UI_KEY"
     },
     {
       "path": "packages/sdk",
       "repository": "CODEXSUN/sdk",
-      "commit": "a6d603d378aa172c5f04939a10776a97e8687420",
+      "commit": "8bd3a9ed00b505a3ee0bf28ce9fc531d880b3e99",
       "sshSecret": "RELEASE_SDK_KEY"
     },
     {

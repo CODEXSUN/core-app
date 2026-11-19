@@ -2,13 +2,29 @@
 
 ## Version State
 
-Current version: 0.1.3
+Current version: 0.1.4
 
-Release tag: v-0.1.3
+Release tag: v-0.1.4
 
-Changelog label: v 0.1.3
+Changelog label: v 0.1.4
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.4
+
+### [v 0.1.4] 2026-11-19 - Bound Core startup and aggregate scoped Billing context
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.4.
+- Aggregate Billing context into one tenant-scoped authenticated read while retaining all six constituent module permissions; validate company/year selections and retain Billing-owned actor policy checks.
+- Remove the dashboard width cap and retain responsive minimum-width-zero content padding.
+- Wait on known temporary PostgreSQL connection/recovery failures through the public framework helper before listening; fail authentication/schema/configuration errors without retrying migrations. Close pools on startup failure.
+- Typecheck/build, 14 unit/tool tests and 46 disposable PostgreSQL checks passed; live deployment and browser width measurements remain separately verified stages.
 
 ## v-0.1.3
 

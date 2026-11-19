@@ -116,3 +116,10 @@ Release validation passed: typecheck, frontend build, 7 unit/tool checks, 45 Pos
 
 - Source typecheck/build and app/tool checks passed for the coordinated release, with restricted Docker database targets tested where needed. Dependency commits are published immutable versions. The user authorized including current app changes after audit.
 - Tagged workflow success, database copy/migration planning, runtime checks and Platform admission remain separate CodeShip stages; source publication alone does not certify deployment.
+
+
+## 2026-11-19 — Supervised startup and Billing-context capacity audit
+
+Added a tenant-scoped read-only Billing aggregate using existing public module boundaries and all six constituent permissions; validated selected company/year IDs. Billing retains its own actor policy and write-time reference validation. One delegated Core HTTP request replaces the six-read integration path. Removed Core dashboard max-width cap with responsive minimum-width-zero padding. Adopted public framework bounded startup waiting for only temporary PostgreSQL recovery/transport errors, separate fatal schema checks and pool cleanup. No schema migration, seed/reset, native restart or live business write. Typecheck/build, 14 unit/tool tests and 45 existing PostgreSQL checks passed; an additional real temporary PostgreSQL transport startup-recovery test passed. Release pins/shared UI, tagged CI and CodeShip rollout are separate handoff stages. See supervisor-audit-20261119.md.
+
+Final verification: all46 PostgreSQL checks including the real startup transport recovery passed. Release0.1.4 pins published framework0.2.0, UI0.1.12 and SDK0.1.5; no schema migration.
