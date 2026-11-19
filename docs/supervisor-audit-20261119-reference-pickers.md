@@ -1,6 +1,6 @@
 # Core reference-picker follow-up — 2026-11-19
 
-Status: implemented for fresh 0.1.7; publication and selected deployment are pending. Core 0.1.6 is independently deployed and its immutable tag remains unchanged.
+Status: immutable 0.1.7 published, tagged CI passed, selected local Docker deployment and independent verification completed. Core 0.1.6 is independently deployed and its immutable tag remains unchanged.
 
 ProductForm still performs seven eager full foreign collection reads in Promise.all. A separate real disposable35,000-row PostgreSQL fixture(5000 rows in each foreign catalogue, valid71-character names) measured:
 
@@ -31,3 +31,9 @@ Verification: 32 unit/tool tests and 49 disposable PostgreSQL checks passed, inc
 Actual Product New/Edit, Contact New and Company New/Edit forms were browser-tested against frozen published UI 0.1.13 (984a9d2afd4dcfdc80bd1f940c9a94cb0dff298b), with synthetic 5,000-item HTTP catalogues: zero eager requests even after adding address/bank rows; 25-row responses at most 2,146 bytes; beyond-page search, off-page/inactive labels, schema validation, 403 denial, manual 503 recovery and cancellation passed. Changing Company country cleared dependent IDs and aborted the selected-state and previous-parent page requests; three HTTP aborts were observed. Document widths matched 360/768/1440 viewports; Dialog widths were 328/736/896. Mobile layout was visually reviewed. These browser fixtures test rendering/transport behavior, not live authentication or production throughput.
 
 Evidence is retained in docs/evidence/core-reference-browser-evidence.json and viewport screenshots. Unrelated concurrent Zetro home-page integration is excluded from this release; pinned published framework/UI/SDK remain unchanged.
+
+## Immutable release
+
+Tag `v-0.1.7`, commit `a4b429fd2f15770c8074f4669363318e3b93e198`; workflow `44446782301` succeeded including the complete PostgreSQL suite. Frozen published dependency verification independently passed build/typecheck and all 32 unit/tool tests. Image and exact image ID: `sha256:fab45e03bed878f5b785d75ecc3d75e4920fd19a5c7a398148ff846d5b132782`; image archive SHA-256 `3da5f532d97f84558c9cd75fffe6c7df39afc9bd2f9be2819029a840eacaebf2`. CodeShip approved release set `approved-2026-11-19T02-50-21-421Z.json`. Initial selected update stopped before effects on the existing exclusive operation lock; it was preserved.
+
+[Selected live deployment](deployments/local-core-0.1.7-20261119.md) completed with preserved tables/history/grants/siblings and three-role authenticated reads, encoded parent queries and denial/revocation checks. Final cross-app delegated encoded-query correction remains Platform-owned.

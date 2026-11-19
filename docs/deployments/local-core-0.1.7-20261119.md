@@ -1,0 +1,13 @@
+# Core 0.1.7 selected local deployment — 2026-11-19
+
+Release tag `v-0.1.7`; source `a4b429fd2f15770c8074f4669363318e3b93e198`; successful tagged workflow `44446782301`. Approved image/image ID `sha256:fab45e03bed878f5b785d75ecc3d75e4920fd19a5c7a398148ff846d5b132782`, archive checksum `3da5f532d97f84558c9cd75fffe6c7df39afc9bd2f9be2819029a840eacaebf2`.
+
+Executed by Core owner through shared CodeShip prepare-release-set and selected update adapter using approved-2026-11-19T02-50-21-421Z.json. Initial busy lock was preserved; actual operation began after Billing released it, run 2026-11-19T02-53-29-468Z. No sibling/shared-PostgreSQL restart, raw Docker mutation, native process or reset/seed operation.
+
+Selected update succeeded 02:56:08.292 UTC; independent verify passed. Actual image ID exactly matches the approved release, healthy with sole binding 127.0.0.1:14345:4345. Migration stage explicitly skipped: all 40 history names unchanged. All 39 public-table counts (395 total rows), Platform role/user-role/app-grant fingerprints and all 16 pre-existing sibling container identities were unchanged. An unrelated ephemeral container appeared during concurrent work; no existing sibling changed. Private before/after receipts remain ignored and restricted in CodeShip.
+
+Saved owner, administrator and tenant-user logins all returned 200, no forced password change, and correct authenticated workspace tenant/user. Lean bootstrap (760 bytes), setup (85 bytes), desk and bounded reference lookup reads returned 200. Exact encoded parent-ID requests for states/districts/cities/pincodes all returned 200 with correct empty totals for the chosen existing parent records; populated, overlapping-parent/foreign-tenant cases are verified in the disposable SQL suite. Existing local contact/product desk responses were 333/195 bytes. Read timings varied 182–572ms under shared concurrent activity; this is not a clean 100-user throughput claim.
+
+The same-origin adapter discarded a forged tenant header and retained original identity; canonical Platform rejected it 400. Direct business reads without a grant returned 401, foreign browser origin 403. Empty contact writes created no data: owner/admin 400 validation, ordinary user 403. All logouts returned 200 and revoked sessions 401. No valid live business write was performed.
+
+Billing's separately observed encoded service-to-service query rejection belongs to Platform gateway validation; direct Core bootstrap via the browser adapter passed for all three roles, so no Core permission/encoding workaround was introduced. Final cross-app delegated flow verification belongs to that Platform correction and supervisor audit. Source and fixture proof is in ../supervisor-audit-20261119-reference-pickers.md.
