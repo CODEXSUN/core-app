@@ -145,3 +145,7 @@ Replaced eager full foreign catalogue reads across ordinary relationship forms w
 ## 2026-11-20 — App launcher and tab sessions
 
 Prepared v-0.1.8 from the published v-0.1.7 baseline. The workspace launcher reads the authenticated Platform catalogue; UI 0.1.19 and SDK 0.1.11 are pinned for launcher and tab-session behavior. No database migration or access grant is included. With the exact pinned sibling sources, typecheck, production build, 32 unit/tool tests, and version checks passed. Local Docker update and cross-app live verification remain pending.
+
+## 2026-11-20 — Authenticated launcher catalogue
+
+Prepared v-0.1.9 using SDK 0.1.12 and UI 0.1.19. The launcher uses the authenticated Platform catalogue and preserves existing app permissions. The exact-pinned typecheck, production build, unit/tool tests and version checks passed. No database migration or access grant is included. Local Docker and cross-app live verification remain pending.

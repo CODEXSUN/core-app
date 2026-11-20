@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.8
+Current version: 0.1.9
 
-Release tag: v-0.1.8
+Release tag: v-0.1.9
 
-Changelog label: v 0.1.8
+Changelog label: v 0.1.9
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.9
+
+### [v 0.1.9] 2026-11-20 - Allow the launcher catalogue through the app bridge
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.9.
+- Pin SDK 0.1.12 so the authenticated launcher catalogue is available through the app bridge.
 
 ## v-0.1.8
 

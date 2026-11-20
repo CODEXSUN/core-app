@@ -1,3 +1,3 @@
-# v-0.1.8
+# v-0.1.9
 
-Enable the shared app launcher using the authenticated Platform catalogue and update the shared UI and SDK pins for isolated tab sessions. The catalogue continues to enforce the user's existing app access. No schema migration or access grant is included.
+Pin SDK 0.1.12 to allow the authenticated launcher catalogue through the app bridge. The preceding release remains retained and must not be deployed for the launcher rollout. No database migration or access grant is included.

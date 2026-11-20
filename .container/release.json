@@ -21,7 +21,7 @@
     {
       "path": "packages/sdk",
       "repository": "CODEXSUN/sdk",
-      "commit": "28ede184545615e0ca7c53613fb9981fe85bd90d",
+      "commit": "ccff028cc970174ed9283beca07834e5290b2bfd",
       "sshSecret": "RELEASE_SDK_KEY"
     },
     {
