@@ -1,3 +1,4 @@
+import {softDeleteCoreRecord} from '../../../database/soft-delete.ts';
 import {pageUnitRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
@@ -12,6 +13,10 @@ import { listUnit, findUnit, insertUnit, updateUnit } from "./repository.ts";
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createUnitService(db: Kysely<Database>) {
   return {
+    remove(context: ModuleContext, publicId: string) {
+      requireModulePermission(context, "common/unit:delete");
+      return softDeleteCoreRecord(db, context, "units", idSchema.parse(publicId));
+    },
     page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/unit:read');return pageUnitRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/unit:read");

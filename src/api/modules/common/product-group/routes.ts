@@ -11,6 +11,8 @@ export function registerProductGroupRoutes(
   service: ReturnType<typeof createProductGroupService>,
   resolveContext: ContextResolver,
 ) {
+  app.delete<{Params:{publicId:string}}>('/api/v1/product-groups/:publicId', (request,reply) =>
+    performModule(request,reply,resolveContext,context => service.remove(context,request.params.publicId)));
   app.get('/api/v1/product-groups/page',(request,reply)=>performModule(request,reply,resolveContext,context=>service.page(context,request.query)));
   app.get("/api/v1/product-groups", (request, reply) =>
     performModule(request, reply, resolveContext, (context) =>
@@ -119,6 +121,7 @@ export const productGroupOpenApiPaths = {
         schema: { type: "string", pattern: "^[a-z0-9]{8}$" },
       },
     ],
+    delete: { ...operation("Delete", true, {type:'object',properties:{public_id:{type:'string'},deleted_at:{type:'string'},deleted_by:{type:'string'},active:{const:false}}}), description: "Permission: common/product-group:delete. Soft-deletes only an unreferenced Core record, preserves its immutable public ID and audit fields; missing or already deleted returns404." },
     get: operation("Read", false, recordSchema),
     patch: { ...operation("Update", true, recordSchema), requestBody },
   },

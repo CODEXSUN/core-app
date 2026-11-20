@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.9
+Current version: 0.1.10
 
-Release tag: v-0.1.9
+Release tag: v-0.1.10
 
-Changelog label: v 0.1.9
+Changelog label: v 0.1.10
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.10
+
+### [v 0.1.10] 2026-11-20 - Complete Core backend lifecycle and frontend connections
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.10.
+- Complete 37-module CRUD, guarded soft deletion, JSON master-reference protection and the current-year deletion constraint. Wire all native list/detail/edit/delete screens while preserving shared ownership and public IDs. No Core schema changes or user grant changes.
 
 ## v-0.1.9
 

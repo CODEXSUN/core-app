@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -34,9 +35,11 @@ const columns: MasterListColumn<ContactListRow>[] = [
 export default function ContactPage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/contacts".length);
@@ -92,6 +95,7 @@ export default function ContactPage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="contacts" publicId={publicId} onDeleted={() => navigate("/contacts",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -127,6 +131,7 @@ export default function ContactPage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

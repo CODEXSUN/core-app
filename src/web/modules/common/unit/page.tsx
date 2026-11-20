@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -31,9 +32,11 @@ const columns: MasterListColumn<UnitListRow>[] = [
 export default function UnitPage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/units".length);
@@ -89,6 +92,7 @@ export default function UnitPage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="units" publicId={publicId} onDeleted={() => navigate("/units",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -124,6 +128,7 @@ export default function UnitPage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

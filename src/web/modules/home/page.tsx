@@ -489,7 +489,7 @@ function Workspace() {
                 You do not have permission to view this module.
               </p>
             ) : ModulePage ? (
-              <ModulePage onHeaderActionsChange={header} canWrite={canWrite} />
+              <ModulePage onHeaderActionsChange={header} canWrite={canWrite} canDelete={session?.permissions.includes(permission + ":delete") ?? false} />
             ) : (
               <Card>
                 <CardHeader>

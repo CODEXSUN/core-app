@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -36,9 +37,11 @@ const columns: MasterListColumn<SalesTypeListRow>[] = [
 export default function SalesTypePage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/sales-types".length);
@@ -94,6 +97,7 @@ export default function SalesTypePage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="sales-types" publicId={publicId} onDeleted={() => navigate("/sales-types",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -131,6 +135,7 @@ export default function SalesTypePage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

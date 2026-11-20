@@ -149,3 +149,36 @@ Prepared v-0.1.8 from the published v-0.1.7 baseline. The workspace launcher rea
 ## 2026-11-20 — Authenticated launcher catalogue
 
 Prepared v-0.1.9 using SDK 0.1.12 and UI 0.1.19. The launcher uses the authenticated Platform catalogue and preserves existing app permissions. The exact-pinned typecheck, production build, unit/tool tests and version checks passed. No database migration or access grant is included. Local Docker and cross-app live verification remain pending.
+
+
+## 2026-11-20 — Complete native backend CRUD/delete audit and Billing integration (unreleased)
+
+Added scoped, module-specific delete permissions/services/routes/OpenAPI for all 37 Core modules. Soft deletion retains public IDs and actor/time audit, hides ordinary list/page/single reads and cannot be undone through update. Live inbound SQL foreign keys and company/contact JSON address/bank references block deletion. Deletion locks the master against reference creation; all same-database reference resolvers retain their shared locks. Current financial-year deletion clears is_current atomically, fixing the existing active/current constraint interaction; default selections continue to prevent deletion while referenced. No Core migration was required and no real permission grants changed.
+
+Added all-module editable-field create/update/read persistence checks against actual SQL columns, a captured read-only Codexsun Core field fixture, and a full inventory/comparison of 37 native modules and 521 columns. Explicit legacy-to-native differences (IDs/audit/status, child IDs/labels/order, logo paths, industry relationship, ancestry/default derived fields and company/year-scoped Billing openings) are listed in backend-verification.md and backend-field-inventory.md. Strict native APIs do not silently accept missing legacy fields; no old client data import was performed.
+
+Final verification: typecheck passes; all 45 unit/tool tests pass; all 91 PostgreSQL checks pass, zero failures/skips. Covers 37-module CRUD and references, hidden/retained deleted records, JSON master protection, current-year deletion, delete-versus-dependent-create race, permission/tenant failures, seeds, upgrade recovery and bounded catalogue regressions. Billing separately passes 40 PostgreSQL checks against the actual Core API/public client plus six-module canonical lifecycle/settlement/conversion tests, including preserving historical master snapshots after rename/deletion. All database work used disposable _test schemas; no Docker/client fixture writes.
+
+Source-only candidate; version remains 0.1.7, no commit/push/tag/deployment/grant/live migration. Local Docker hold remains active, Ubuntu remains stopped. Existing unrelated home sidecar/Ubuntu adapters/tests/docs are preserved. Billing verification overlays this unpublished backend source; future release must publish and pin the matching Core commit before clean-source release certification.
+
+
+## 2026-11-20 — Core list/form/delete connections (unreleased)
+
+Connected the 37 existing Core detail screens to a Core-owned delete confirmation using public shared UI controls and the existing Platform browser transport. The header receives the module-specific delete grant independently from write access; no runtime grants were added. Failed dependency checks stay in the dialog with the owner's message, and successful deletion returns to the module list. Existing list, form, save, reference and unsaved-change behavior is retained. Preserved the unrelated Zetro home composition while adding only the permission prop at its module boundary.
+
+Both owner typecheck and production build pass; 45 unit/tool checks pass. Production-bundle acceptance through the actual Core API and disposable database passes all 37 list/edit/save flows plus visible referenced-master denial and successful unreferenced deletion (38 test results). The test-only browser supplies the Web Locks behavior required by the current workspace SDK; no production tab-isolation/security behavior changed.
+
+The fixture audit exposed Kysely migration-table discovery seeing tables in a sibling test schema. Core now resolves current_schema and supplies migrationTableSchema explicitly, matching the existing Billing approach; callers await the migrator consistently. No runtime migrations were executed, no historical migration files changed, and no schema/permission/deployment changes were applied to local Docker. Final full database regression is recorded separately after completion. Source remains version 0.1.7 and unpublished; unrelated Ubuntu/sidecar work remains intact.
+
+
+Final database regression after schema-specific migration bookkeeping passes all 91 tests, zero failures/skips. Frontend owner results: typecheck/build pass, 45 unit/tool and 38 actual production-bundle/Core-API UI checks pass. See frontend-wiring-review.md. All testing used disposable schemas; no live changes or release actions.
+
+
+## 2026-11-20 — Prepare Core App 0.1.10 for direct local Docker update
+
+The user explicitly authorized version/log updates, commit/push and direct deployment of Platform, Core App and Billing. Built this isolated source on the newest published owner release, preserving its current authentication/launcher pins and unrelated primary work. Complete 37-module CRUD, guarded soft deletion, JSON master-reference protection and the current-year deletion constraint. Wire all native list/detail/edit/delete screens while preserving shared ownership and public IDs. No Core schema changes or user grant changes.
+
+The earlier Docker hold is superseded only for this selected local rollout. Wait for the active other deployment owner to finish; do not message or hand off execution. Ubuntu/VPS stay stopped. Release checks and actual deployment evidence follow below.
+
+
+Release candidate 0.1.10 verified against the published Framework/UI/SDK pins inherited from 0.1.9: clean install, typecheck and production build pass; 32 owner unit/tool tests, all 91 PostgreSQL checks and 38 production-bundle UI/API checks pass. Ubuntu-only tests/adapters remain excluded from this local app release. Existing migration names/contents are unchanged. Source reviewed for private environment/runtime files; only the authorized backend/frontend/docs work is selected. Immutable publication precedes any local update.

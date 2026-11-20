@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -31,9 +32,11 @@ const columns: MasterListColumn<WarehouseListRow>[] = [
 export default function WarehousePage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/warehouses".length);
@@ -89,6 +92,7 @@ export default function WarehousePage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="warehouses" publicId={publicId} onDeleted={() => navigate("/warehouses",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -126,6 +130,7 @@ export default function WarehousePage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

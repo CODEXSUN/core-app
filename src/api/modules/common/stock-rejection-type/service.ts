@@ -1,3 +1,4 @@
+import {softDeleteCoreRecord} from '../../../database/soft-delete.ts';
 import {pageStockRejectionTypeRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
@@ -17,6 +18,10 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createStockRejectionTypeService(db: Kysely<Database>) {
   return {
+    remove(context: ModuleContext, publicId: string) {
+      requireModulePermission(context, "common/stock-rejection-type:delete");
+      return softDeleteCoreRecord(db, context, "stock_rejection_types", idSchema.parse(publicId));
+    },
     page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/stock-rejection-type:read');return pageStockRejectionTypeRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/stock-rejection-type:read");

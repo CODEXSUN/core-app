@@ -33,7 +33,7 @@ try {
   try {
     if (command === "status")
       console.log(
-        JSON.stringify(await createMigrator(db, modules).getMigrations()),
+        JSON.stringify(await (await createMigrator(db, modules)).getMigrations()),
       );
     else if (command === "seed")
       console.log(

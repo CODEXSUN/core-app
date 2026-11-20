@@ -1,3 +1,4 @@
+import {softDeleteCoreRecord} from '../../../database/soft-delete.ts';
 import {pageFinancialYearRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
@@ -17,6 +18,10 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createFinancialYearService(db: Kysely<Database>) {
   return {
+    remove(context: ModuleContext, publicId: string) {
+      requireModulePermission(context, "master/financial-year:delete");
+      return softDeleteCoreRecord(db, context, "financial_years", idSchema.parse(publicId));
+    },
     page(context: ModuleContext,input:unknown){requireModulePermission(context,'master/financial-year:read');return pageFinancialYearRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "master/financial-year:read");

@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -31,9 +32,11 @@ const columns: MasterListColumn<ProductTypeListRow>[] = [
 export default function ProductTypePage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/product-types".length);
@@ -89,6 +92,7 @@ export default function ProductTypePage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="product-types" publicId={publicId} onDeleted={() => navigate("/product-types",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -128,6 +132,7 @@ export default function ProductTypePage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

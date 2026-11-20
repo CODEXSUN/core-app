@@ -1,3 +1,4 @@
+import {softDeleteCoreRecord} from '../../../database/soft-delete.ts';
 import {pageWorkOrderRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
@@ -17,6 +18,10 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createWorkOrderService(db: Kysely<Database>) {
   return {
+    remove(context: ModuleContext, publicId: string) {
+      requireModulePermission(context, "master/work-order:delete");
+      return softDeleteCoreRecord(db, context, "work_orders", idSchema.parse(publicId));
+    },
     page(context: ModuleContext,input:unknown){requireModulePermission(context,'master/work-order:read');return pageWorkOrderRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "master/work-order:read");

@@ -1,3 +1,4 @@
+import {softDeleteCoreRecord} from '../../../database/soft-delete.ts';
 import {pageTaxRecords} from './repository.ts';
 import { z } from "zod";
 import type { Kysely } from "kysely";
@@ -12,6 +13,10 @@ import { listTax, findTax, insertTax, updateTax } from "./repository.ts";
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createTaxService(db: Kysely<Database>) {
   return {
+    remove(context: ModuleContext, publicId: string) {
+      requireModulePermission(context, "common/tax:delete");
+      return softDeleteCoreRecord(db, context, "taxes", idSchema.parse(publicId));
+    },
     page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/tax:read');return pageTaxRecords(db,context,input);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/tax:read");

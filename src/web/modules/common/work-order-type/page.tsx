@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -31,9 +32,11 @@ const columns: MasterListColumn<WorkOrderTypeListRow>[] = [
 export default function WorkOrderTypePage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/work-order-types".length);
@@ -92,6 +95,7 @@ export default function WorkOrderTypePage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="work-order-types" publicId={publicId} onDeleted={() => navigate("/work-order-types",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -133,6 +137,7 @@ export default function WorkOrderTypePage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);
