@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.7
+Current version: 0.1.8
 
-Release tag: v-0.1.7
+Release tag: v-0.1.8
 
-Changelog label: v 0.1.7
+Changelog label: v 0.1.8
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.8
+
+### [v 0.1.8] 2026-11-20 - Add tab-isolated app launcher
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.8.
+- Connect the shared app launcher to the authenticated Platform catalogue and pin the tab-session SDK and launcher UI releases.
 
 ## v-0.1.7
 

@@ -314,7 +314,7 @@ function Workspace() {
       className="w-full min-w-0"
       onLogout={()=>void identity?.logout()} applicationName="Core"
       companyBrand={{...appBrand,name:identity?.session.tenant?.name??appBrand.name}}
-      appItems={[]}
+      launcherCatalogUrl="/platform-api/v1/landing" appItems={[]}
       navigation={[
         {
           label: "Locations",

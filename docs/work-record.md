@@ -141,3 +141,7 @@ Verified0.1.6 publication: tagv-0.1.6 commit28bac4d4fac100d50592dbf9feb5b4cac34e
 ## 2026-11-19 — Bounded relationship forms and exact address cascades (0.1.7)
 
 Replaced eager full foreign catalogue reads across ordinary relationship forms with on-demand remote pickers, selected-record GETs, inactive historical labels and abort/generation guards. Added narrow exact parent public-ID page constraints before count/paging with existing scoped parent resolver/read permissions. Legacy bulk APIs and fresh save validation remain unchanged. No migration/reset/seed. Measured old Product references 10,387,901 bytes; frozen UI 0.1.13 browser actual forms make zero eager reads, pages <=2,146 bytes and pass 360/768/1440 layouts, failures/recovery and cascade cancellation. 32 unit/tool and 49 PostgreSQL checks passed; isolated release verification/publication/deployment still pending. See supervisor-audit-20261119-reference-pickers.md. Concurrent unrelated Zetro home-page work is preserved outside this release.
+
+## 2026-11-20 — App launcher and tab sessions
+
+Prepared v-0.1.8 from the published v-0.1.7 baseline. The workspace launcher reads the authenticated Platform catalogue; UI 0.1.19 and SDK 0.1.11 are pinned for launcher and tab-session behavior. No database migration or access grant is included. With the exact pinned sibling sources, typecheck, production build, 32 unit/tool tests, and version checks passed. Local Docker update and cross-app live verification remain pending.
