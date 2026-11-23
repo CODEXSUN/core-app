@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -41,9 +42,11 @@ const columns: MasterListColumn<DefaultCompanyListRow>[] = [
 export default function DefaultCompanyPage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/default-companies".length);
@@ -104,6 +107,7 @@ export default function DefaultCompanyPage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="default-companies" publicId={publicId} onDeleted={() => navigate("/default-companies",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -145,6 +149,7 @@ export default function DefaultCompanyPage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
     canCreateDefault,

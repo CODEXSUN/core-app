@@ -2,13 +2,52 @@
 
 ## Version State
 
-Current version: 0.1.7
+Current version: 0.1.10
 
-Release tag: v-0.1.7
+Release tag: v-0.1.10
 
-Changelog label: v 0.1.7
+Changelog label: v 0.1.10
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.10
+
+### [v 0.1.10] 2026-11-20 - Complete Core backend lifecycle and frontend connections
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.10.
+- Complete 37-module CRUD, guarded soft deletion, JSON master-reference protection and the current-year deletion constraint. Wire all native list/detail/edit/delete screens while preserving shared ownership and public IDs. No Core schema changes or user grant changes.
+
+## v-0.1.9
+
+### [v 0.1.9] 2026-11-20 - Allow the launcher catalogue through the app bridge
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.9.
+- Pin SDK 0.1.12 so the authenticated launcher catalogue is available through the app bridge.
+
+## v-0.1.8
+
+### [v 0.1.8] 2026-11-20 - Add tab-isolated app launcher
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.8.
+- Connect the shared app launcher to the authenticated Platform catalogue and pin the tab-session SDK and launcher UI releases.
 
 ## v-0.1.7
 

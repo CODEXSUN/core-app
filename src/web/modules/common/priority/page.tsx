@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -33,9 +34,11 @@ const columns: MasterListColumn<PriorityListRow>[] = [
 export default function PriorityPage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/priorities".length);
@@ -91,6 +94,7 @@ export default function PriorityPage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="priorities" publicId={publicId} onDeleted={() => navigate("/priorities",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -128,6 +132,7 @@ export default function PriorityPage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

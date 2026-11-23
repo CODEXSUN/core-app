@@ -1,0 +1,911 @@
+{
+  "country": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\location\\country\\country.types.ts",
+    "sha256": "8d661129c683b379e8846ac63b48fd137047bf5dd605f1a2d9dcdd4542fa07c7",
+    "types": {
+      "Country": [
+        "id",
+        "code",
+        "name",
+        "sortOrder",
+        "status"
+      ],
+      "CountrySavePayload": [
+        "code",
+        "name",
+        "sortOrder",
+        "status"
+      ]
+    }
+  },
+  "state": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\location\\state\\state.types.ts",
+    "sha256": "e853e5733491d856c72de0b46940cecf99c87368be9c96458c3c729559d8b354",
+    "types": {
+      "State": [
+        "id",
+        "countryId",
+        "countryName",
+        "code",
+        "name",
+        "sortOrder",
+        "status"
+      ],
+      "StateSavePayload": [
+        "countryId",
+        "code",
+        "name",
+        "sortOrder",
+        "status"
+      ]
+    }
+  },
+  "district": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\location\\district\\district.types.ts",
+    "sha256": "d31e6c6392f8a1ef6c55eb5a084efa391f0b575d9a0cbacd1d3c1d39a7210bf7",
+    "types": {
+      "District": [
+        "id",
+        "stateId",
+        "stateName",
+        "countryId",
+        "countryName",
+        "name",
+        "sortOrder",
+        "status"
+      ],
+      "DistrictSavePayload": [
+        "stateId",
+        "name",
+        "sortOrder",
+        "status"
+      ]
+    }
+  },
+  "city": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\location\\city\\city.types.ts",
+    "sha256": "018389c9b7f24b3c3bf6d442442bd24d3700457d7cb0eee4a60fd1f504190461",
+    "types": {
+      "City": [
+        "id",
+        "districtId",
+        "districtName",
+        "stateId",
+        "stateName",
+        "countryId",
+        "countryName",
+        "name",
+        "sortOrder",
+        "status"
+      ],
+      "CitySavePayload": [
+        "districtId",
+        "name",
+        "sortOrder",
+        "status"
+      ]
+    }
+  },
+  "pincode": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\location\\pincode\\pincode.types.ts",
+    "sha256": "6c7c2fa6d3f4f9a4f9a573846457c4711ea21ac92306300c049449fc6d37c2a1",
+    "types": {
+      "Pincode": [
+        "id",
+        "cityId",
+        "name",
+        "area",
+        "sortOrder",
+        "status"
+      ],
+      "PincodeSavePayload": [
+        "cityId",
+        "name",
+        "area",
+        "sortOrder",
+        "status"
+      ]
+    }
+  },
+  "ledger-group": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\accounts\\ledger-groups\\ledger-groups.types.ts",
+    "sha256": "53928b4f9bb8e407157930b1be0aff03ab3408ab970ab543b31cf0365464ed9d",
+    "types": {}
+  },
+  "ledger": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\accounts\\ledgers\\ledgers.types.ts",
+    "sha256": "47b67bb2a44aa11341d7d473128d02dfe3bd5f5b8b5cba5a9e36315f230128ea",
+    "types": {
+      "LedgerRecord": [
+        "id",
+        "ledgerGroupId",
+        "ledgerGroupName",
+        "name",
+        "status"
+      ]
+    }
+  },
+  "address-type": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\contacts\\address-types\\address-types.types.ts",
+    "sha256": "3ff7f219b2006ed4d1d9df29e69430757c6da50d0016067e7107a5f90e85fd6f",
+    "types": {
+      "AddressTypesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "AddressTypesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "bank-name": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\contacts\\bank-names\\bank-names.types.ts",
+    "sha256": "228dd6505b6792bdfe9dc7deb88d114f626d5e909f3f238887ba4d68ca88307a",
+    "types": {
+      "BankNamesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "BankNamesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "contact-group": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\contacts\\contact-groups\\contact-groups.types.ts",
+    "sha256": "3552f0e453b03d3d0ab3d80962ace7e95a66bac1e778a05622589295459467e1",
+    "types": {
+      "ContactGroupsRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "ContactGroupsSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "contact-type": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\contacts\\contact-types\\contact-types.types.ts",
+    "sha256": "70512713f2dd215d20129a15f83891bbf148d79f7ddebe88c689a5eb6a5379c7",
+    "types": {
+      "ContactTypesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "ContactTypesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "currency": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\others\\currencies\\currencies.types.ts",
+    "sha256": "ec3ae8f517270f21f6d3648b47ca255457557ebd89419aa13960b72b7084bc3e",
+    "types": {
+      "CurrenciesRecord": [
+        "id",
+        "name",
+        "symbol",
+        "isActive",
+        "sortOrder"
+      ],
+      "CurrenciesSavePayload": [
+        "name",
+        "symbol",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "month": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\others\\months\\months.types.ts",
+    "sha256": "7d869257413a2eab3ddd19841acfade81a1d9485d5e467de5594bbc96d3225a0",
+    "types": {
+      "MonthsRecord": [
+        "id",
+        "name",
+        "startDate",
+        "endDate",
+        "isActive",
+        "sortOrder"
+      ],
+      "MonthsSavePayload": [
+        "name",
+        "startDate",
+        "endDate",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "payment-term": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\others\\payment-terms\\payment-terms.types.ts",
+    "sha256": "d9de1627703837ac4805e87c27207b3c760c1f38961ff33c2e8089cde99a9360",
+    "types": {
+      "PaymentTermsRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "PaymentTermsSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "priority": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\others\\priorities\\priorities.types.ts",
+    "sha256": "d7909b3e9bc62510ce0becc381bf6821db2ba13f8ea71449e47186bb8276badc",
+    "types": {
+      "PrioritiesRecord": [
+        "id",
+        "name",
+        "colour",
+        "tag",
+        "isActive",
+        "sortOrder"
+      ],
+      "PrioritiesSavePayload": [
+        "name",
+        "colour",
+        "tag",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "sales-type": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\others\\sales-types\\sales-types.types.ts",
+    "sha256": "bfd2a3919f8bdcf5c069d86ac5dd102b1c23f11809b4b0dea68abb2ffce0699a",
+    "types": {
+      "SalesTypesRecord": [
+        "id",
+        "name",
+        "description",
+        "isActive",
+        "sortOrder"
+      ],
+      "SalesTypesSavePayload": [
+        "name",
+        "description",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "brand": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\brands\\brands.types.ts",
+    "sha256": "77410a3b335c38543af7a5f675b6abafd2232b351bc7661eff6fa12dae7bce62",
+    "types": {
+      "BrandsRecord": [
+        "id",
+        "isActive",
+        "logoAlt",
+        "logoUrl",
+        "name",
+        "showOnStorefront",
+        "sortOrder"
+      ],
+      "BrandsSavePayload": [
+        "name",
+        "isActive",
+        "logoAlt",
+        "logoUrl",
+        "showOnStorefront",
+        "sortOrder"
+      ]
+    }
+  },
+  "colour": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\colours\\colours.types.ts",
+    "sha256": "a30422a95d4cd5ee66cc461b9ff1460fbae4d57490804672f05508655c416e2d",
+    "types": {
+      "ColoursRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "ColoursSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "hsn-code": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\hsn-codes\\hsn-codes.types.ts",
+    "sha256": "0b25be007e6570b3d1df98b29c78e56ca5702f1cf903ffb9038925a7b8fa75b9",
+    "types": {
+      "HsnCodesRecord": [
+        "id",
+        "code",
+        "description",
+        "isActive",
+        "sortOrder"
+      ],
+      "HsnCodesSavePayload": [
+        "code",
+        "description",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "product-category": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\product-categories\\product-categories.types.ts",
+    "sha256": "a70568f44b3cb9c77d06fd84a5c90040a2c8eb5b611fa0c7b4b0452f53408c10",
+    "types": {
+      "ProductCategoriesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "ProductCategoriesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "product-group": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\product-groups\\product-groups.types.ts",
+    "sha256": "3e1a30b0068c93388eef01868cf2c4a95a7f3d33715511189f7943d98c796280",
+    "types": {
+      "ProductGroupsRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "ProductGroupsSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "product-type": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\product-types\\product-types.types.ts",
+    "sha256": "56618f24d176529d49d66971a1b8a3a04843902cfeae668db842ef253031a968",
+    "types": {
+      "ProductTypesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "ProductTypesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "size": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\sizes\\sizes.types.ts",
+    "sha256": "1864686c822c04e6cbb61a6c2d8ebe2338f1de080aff3350b4ece37ee78b2472",
+    "types": {
+      "SizesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "SizesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "style": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\styles\\styles.types.ts",
+    "sha256": "cd6ec9e8c234a50a636dc73a80f8204a487e4b5a75768999b9863ea5dbd7d360",
+    "types": {
+      "StylesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "StylesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "tax": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\taxes\\taxes.types.ts",
+    "sha256": "1ed03c216a8d3f3ae2a04bc0ea2a38a246216e178e0a4c14794dad57f4e46481",
+    "types": {
+      "TaxesRecord": [
+        "id",
+        "ratePercent",
+        "description",
+        "isActive",
+        "sortOrder"
+      ],
+      "TaxesSavePayload": [
+        "ratePercent",
+        "description",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "unit": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\products\\units\\units.types.ts",
+    "sha256": "5a1f4ffd36cfc302e18622e61c3bb7b7785623f60b3b97a0a11eb63f6410d1ff",
+    "types": {
+      "UnitsRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "UnitsSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "destination": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\workorder\\destinations\\destinations.types.ts",
+    "sha256": "c44485707ef2033ff0ab882f82b61ddcfddd5c8d9c1fca377f86599007ac86a5",
+    "types": {
+      "DestinationsRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "DestinationsSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "stock-rejection-type": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\workorder\\stock-rejection-types\\stock-rejection-types.types.ts",
+    "sha256": "caa2f23cc6b440bcd90c79bb6370c9cbb8fe59cee9b414b4c8d740dc138134e1",
+    "types": {
+      "StockRejectionTypesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "StockRejectionTypesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "transport": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\workorder\\transports\\transports.types.ts",
+    "sha256": "ec552af9b2a732521d805def44ae9f48b8782779e5929fd75eb57f66154869d8",
+    "types": {
+      "TransportsRecord": [
+        "id",
+        "name",
+        "gst",
+        "vehicleNo",
+        "address",
+        "contactNo",
+        "contactPerson",
+        "isActive",
+        "sortOrder"
+      ],
+      "TransportsSavePayload": [
+        "name",
+        "gst",
+        "vehicleNo",
+        "address",
+        "contactNo",
+        "contactPerson",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "warehouse": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\workorder\\warehouses\\warehouses.types.ts",
+    "sha256": "f11d3266e3e2df9463335baf7008663e3f967081fd7cf9ce6d8cefc2f1d81011",
+    "types": {
+      "WarehousesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "WarehousesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "work-order-type": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\common\\workorder\\work-order-types\\work-order-types.types.ts",
+    "sha256": "94af055b6cc54dd228d5dad0990ff1a4d3bfa26baf1fdca19e6f3c37fd32d65b",
+    "types": {
+      "WorkOrderTypesRecord": [
+        "id",
+        "name",
+        "isActive",
+        "sortOrder"
+      ],
+      "WorkOrderTypesSavePayload": [
+        "name",
+        "isActive",
+        "sortOrder"
+      ]
+    }
+  },
+  "company": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\organisation\\company\\company.types.ts",
+    "sha256": "6b44056aefbeb02e008cc8cff946ff85f599ded213ded098161a43c693651bdc",
+    "types": {
+      "CompanyEmail": [
+        "id",
+        "email",
+        "emailType",
+        "isPrimary",
+        "sortOrder"
+      ],
+      "CompanyPhone": [
+        "id",
+        "phone",
+        "phoneType",
+        "isPrimary",
+        "sortOrder"
+      ],
+      "CompanyAddress": [
+        "id",
+        "addressTypeId",
+        "addressTypeName",
+        "addressLine1",
+        "addressLine2",
+        "countryId",
+        "countryName",
+        "stateId",
+        "stateName",
+        "districtId",
+        "districtName",
+        "cityId",
+        "cityName",
+        "pincodeId",
+        "pincodeName",
+        "isDefault",
+        "sortOrder"
+      ],
+      "CompanyBankAccount": [
+        "id",
+        "bankNameId",
+        "bankName",
+        "accountType",
+        "accountNumber",
+        "holderName",
+        "ifsc",
+        "branch",
+        "isPrimary",
+        "sortOrder"
+      ],
+      "CompanySocialLink": [
+        "id",
+        "platform",
+        "url",
+        "status",
+        "isActive",
+        "sortOrder"
+      ],
+      "CompanyRecord": [
+        "id",
+        "code",
+        "name",
+        "legalName",
+        "primaryPhone",
+        "primaryEmail",
+        "gstin",
+        "pan",
+        "msmeNo",
+        "msmeCategory",
+        "tanNo",
+        "tdsAvailable",
+        "tcsAvailable",
+        "website",
+        "description",
+        "logoPath",
+        "logoDarkPath",
+        "faviconPath",
+        "industryId",
+        "industryName",
+        "status",
+        "isActive",
+        "emails",
+        "phones",
+        "addresses",
+        "bankAccounts",
+        "socialLinks",
+        "createdAt",
+        "updatedAt"
+      ],
+      "CompanySaveInput": [
+        "code",
+        "name",
+        "legalName",
+        "gstin",
+        "pan",
+        "msmeNo",
+        "msmeCategory",
+        "tanNo",
+        "tdsAvailable",
+        "tcsAvailable",
+        "website",
+        "description",
+        "logoPath",
+        "logoDarkPath",
+        "faviconPath",
+        "industryId",
+        "industryName",
+        "status",
+        "isActive",
+        "emails",
+        "phones",
+        "addresses",
+        "bankAccounts",
+        "socialLinks"
+      ]
+    }
+  },
+  "financial-year": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\organisation\\financial-year\\financial-year.types.ts",
+    "sha256": "4a87b485ce7f958052fcbd69f5d8fb64d17fdc7769ae1112567a0265f612e7d7",
+    "types": {
+      "FinancialYearRecord": [
+        "id",
+        "uuid",
+        "name",
+        "startDate",
+        "endDate",
+        "isCurrent",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "FinancialYearSavePayload": [
+        "name",
+        "startDate",
+        "endDate",
+        "isCurrent",
+        "status"
+      ]
+    }
+  },
+  "contact": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\master\\contact\\contact.types.ts",
+    "sha256": "ef0c239f07b2104912c68af93fe046475507324ff6bad861919b1a4e033f10af",
+    "types": {
+      "ContactEmail": [
+        "id",
+        "email",
+        "emailType",
+        "isPrimary",
+        "sortOrder"
+      ],
+      "ContactPhone": [
+        "id",
+        "phone",
+        "phoneType",
+        "isPrimary",
+        "sortOrder"
+      ],
+      "ContactAddress": [
+        "id",
+        "addressTypeId",
+        "addressTypeName",
+        "addressLine1",
+        "addressLine2",
+        "countryId",
+        "countryName",
+        "stateId",
+        "stateName",
+        "districtId",
+        "districtName",
+        "cityId",
+        "cityName",
+        "pincodeId",
+        "pincodeName",
+        "isDefault",
+        "sortOrder"
+      ],
+      "ContactBankAccount": [
+        "id",
+        "bankNameId",
+        "bankName",
+        "accountType",
+        "accountNumber",
+        "holderName",
+        "ifsc",
+        "branch",
+        "isPrimary",
+        "sortOrder"
+      ],
+      "ContactSocialLink": [
+        "id",
+        "platform",
+        "url",
+        "status",
+        "isActive",
+        "sortOrder"
+      ],
+      "ContactRecord": [
+        "id",
+        "uuid",
+        "code",
+        "name",
+        "legalName",
+        "typeId",
+        "typeName",
+        "groupId",
+        "groupName",
+        "primaryPhone",
+        "primaryEmail",
+        "gstin",
+        "pan",
+        "msmeNo",
+        "msmeCategory",
+        "tanNo",
+        "tdsAvailable",
+        "tcsAvailable",
+        "openingBalance",
+        "creditLimit",
+        "website",
+        "description",
+        "status",
+        "isActive",
+        "emails",
+        "phones",
+        "addresses",
+        "bankAccounts",
+        "socialLinks",
+        "createdAt",
+        "updatedAt",
+        "deletedAt"
+      ],
+      "ContactSaveInput": [
+        "code",
+        "name",
+        "legalName",
+        "typeId",
+        "typeName",
+        "groupId",
+        "groupName",
+        "gstin",
+        "pan",
+        "msmeNo",
+        "msmeCategory",
+        "tanNo",
+        "tdsAvailable",
+        "tcsAvailable",
+        "openingBalance",
+        "creditLimit",
+        "website",
+        "description",
+        "status",
+        "isActive",
+        "emails",
+        "phones",
+        "addresses",
+        "bankAccounts",
+        "socialLinks"
+      ],
+      "ContactAddressUpdateInput": []
+    }
+  },
+  "product": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\master\\product\\product.types.ts",
+    "sha256": "7ef864b00084bd590aa8529e5899899ae4a2eeee0b7cd524bc30122a8f78d02e",
+    "types": {
+      "ProductRecord": [
+        "id",
+        "uuid",
+        "name",
+        "typeId",
+        "productCategoryId",
+        "hsnCodeId",
+        "unitId",
+        "taxId",
+        "typeName",
+        "productCategoryName",
+        "hsnCode",
+        "unitName",
+        "taxName",
+        "taxRate",
+        "openingStock",
+        "openingRate",
+        "status",
+        "isActive",
+        "createdAt",
+        "updatedAt",
+        "deletedAt"
+      ]
+    }
+  },
+  "work-order": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\master\\work-order\\work-order.types.ts",
+    "sha256": "72b933716f8377a6a53a03dd83866a7b6ced244cb65c0ed72e821dd91a1edbce",
+    "types": {
+      "WorkOrderRecord": [
+        "id",
+        "uuid",
+        "code",
+        "name",
+        "status",
+        "isActive",
+        "createdAt",
+        "updatedAt",
+        "deletedAt"
+      ]
+    }
+  },
+  "default-company": {
+    "source": "D:\\workspace\\codexsun\\apps\\core\\api\\src\\modules\\organisation\\default-company\\default-company.types.ts",
+    "sha256": "21ebc3e4dbae40a42eac70f2d062b6877b158f9def12156fcb4453c7ef37bbb8",
+    "types": {
+      "DefaultCompanyRecord": [
+        "id",
+        "companyId",
+        "companyCode",
+        "companyName",
+        "financialYearId",
+        "financialYearName",
+        "financialYearStartDate",
+        "financialYearEndDate",
+        "landingApp",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "DefaultCompanySavePayload": [
+        "companyId",
+        "financialYearId",
+        "landingApp",
+        "status"
+      ],
+      "ApplicationCompanyBranding": [
+        "brandName",
+        "companyId",
+        "legalName",
+        "logoDarkPath",
+        "logoPath",
+        "faviconPath",
+        "name",
+        "updatedAt"
+      ]
+    }
+  }
+}

@@ -84,10 +84,10 @@ export async function withTestDatabase(
       ),
     ]),
   });
-  const modules = path.resolve("src/api/modules");
+  const modules = path.resolve(import.meta.dirname, "../src/api/modules");
   try {
     if (options.existingBaseline) {
-      const baseline = await createMigrator(db, modules).migrateTo(
+      const baseline = await (await createMigrator(db, modules)).migrateTo(
         "20261117081721_contact_create_contacts",
       );
       assert.ok(!baseline.error);

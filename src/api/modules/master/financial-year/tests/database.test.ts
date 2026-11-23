@@ -116,10 +116,10 @@ test("FinancialYear: migration, scoped persistence, permissions and domain const
         await app.inject({
           method: "DELETE",
           url: url + "/" + saved.public_id,
-          headers: headersA,
+          headers: reader,
         })
       ).statusCode,
-      404,
+      403,
     );
 
     const next = {

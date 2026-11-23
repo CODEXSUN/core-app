@@ -155,10 +155,10 @@ test("all 37 Core modules, references, seeds and upgrade recovery", async (t) =>
             await app.inject({
               method: "DELETE",
               url: url + "/" + record.public_id,
-              headers: headersA,
+              headers: reader,
             })
           ).statusCode,
-          404,
+          403,
         );
       });
     }
@@ -336,7 +336,7 @@ test("all 37 Core modules, references, seeds and upgrade recovery", async (t) =>
           headers: headersB,
         });
         assert.deepEqual(foreignTenant.json(), []);
-        const upgrade = await createMigrator(db, root).getMigrations();
+        const upgrade = await (await createMigrator(db, root)).getMigrations();
         assert.equal(upgrade.filter((value) => value.executedAt).length, 40);
         // Verify safe rollback of newly added configuration, then forward reapply.
         assert.equal((await migrate(db, root, "down")).length, 1);

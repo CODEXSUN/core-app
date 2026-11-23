@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -37,9 +38,11 @@ const columns: MasterListColumn<FinancialYearListRow>[] = [
 export default function FinancialYearPage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/financial-years".length);
@@ -98,6 +101,7 @@ export default function FinancialYearPage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="financial-years" publicId={publicId} onDeleted={() => navigate("/financial-years",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -137,6 +141,7 @@ export default function FinancialYearPage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);

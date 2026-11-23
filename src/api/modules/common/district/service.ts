@@ -1,3 +1,4 @@
+import {softDeleteCoreRecord} from '../../../database/soft-delete.ts';
 import{modulePageQuerySchema}from'../../../../../contracts/module-page.ts';
 import{resolveStateReference}from'../state/index.ts';
 import {pageDistrictRecords} from './repository.ts';
@@ -19,6 +20,10 @@ import {
 const idSchema = z.string().regex(/^[a-z0-9]{8}$/);
 export function createDistrictService(db: Kysely<Database>) {
   return {
+    remove(context: ModuleContext, publicId: string) {
+      requireModulePermission(context, "common/district:delete");
+      return softDeleteCoreRecord(db, context, "districts", idSchema.parse(publicId));
+    },
     async page(context: ModuleContext,input:unknown){requireModulePermission(context,'common/district:read');const value=modulePageQuerySchema.parse(input),refs=z.object({stateId:idSchema.optional()}).strict().parse(value.references);if(refs.stateId)await resolveStateReference(db,context,refs.stateId);return pageDistrictRecords(db,context,value);},
     list(context: ModuleContext) {
       requireModulePermission(context, "common/district:read");

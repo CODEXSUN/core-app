@@ -1,3 +1,4 @@
+import {DeleteMaster} from "../../shared/delete-master";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@workspace/ui";
 import { AsyncState } from "@workspace/ui/blocks/async-state";
@@ -32,9 +33,11 @@ const columns: MasterListColumn<CountryListRow>[] = [
 export default function CountryPage({
   onHeaderActionsChange,
   canWrite,
+  canDelete = false,
 }: {
   onHeaderActionsChange: (actions: ReactNode) => void;
   canWrite: boolean;
+  canDelete?: boolean;
 }) {
   const { path, navigate } = useNavigation();
   const suffix = path.slice("/countries".length);
@@ -90,6 +93,7 @@ export default function CountryPage({
             Back to list
           </Button>
           {newAction}
+          {canDelete && ready && publicId && <DeleteMaster collection="countries" publicId={publicId} onDeleted={() => navigate("/countries",true)}/>}
           {canWrite && (
             <Button
               disabled={!ready}
@@ -127,6 +131,7 @@ export default function CountryPage({
     ready,
     saving,
     canWrite,
+    canDelete,
     navigate,
     onHeaderActionsChange,
   ]);
