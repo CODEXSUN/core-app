@@ -67,3 +67,42 @@ test('GitHub helper defaults to audit and leaves Git index, refs, package versio
     assert.throws(() => execFileSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: root, stdio: 'ignore' }));
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
+
+test('version audit rejects current frontend, release and lock drift without changing historical entries', () => {
+  const root = fixture();
+  try {
+    mkdirSync(join(root, 'src/web/modules/home'), { recursive: true });
+    mkdirSync(join(root, '.container'));
+    const shell = "import manifest from '../../package.json';\nexport const appVersion = manifest.version;\nexport const appVersionLabel = `${appDetails.title} - V${appVersion}`;\n";
+    const home = '<MainLayout versionLabel={appVersionLabel} />';
+    writeFileSync(join(root, 'src/web/app-shell.ts'), shell);
+    writeFileSync(join(root, 'src/web/modules/home/page.tsx'), home);
+    writeFileSync(join(root, 'docs/release-notes.md'), '# v-0.1.0\n');
+    writeFileSync(join(root, '.container/release.json'), JSON.stringify({ version: '0.1.0', tag: 'v-0.1.0', dependencies: [{version:'9.9.9'}] }));
+    assert.deepEqual(checkVersions(root).failures, []);
+    writeFileSync(join(root, 'src/web/app-shell.ts'), shell.replace('manifest.version', '"9.9.9"'));
+    assert.ok(checkVersions(root).failures.some(value => value.includes('root package')));
+    writeFileSync(join(root, 'src/web/app-shell.ts'), shell);
+    writeFileSync(join(root, 'src/web/modules/home/page.tsx'), '<MainLayout versionLabel="Example - V9.9.9" />');
+    assert.ok(checkVersions(root).failures.some(value => value.includes('canonical version label')));
+    writeFileSync(join(root, 'src/web/modules/home/page.tsx'), home);
+    writeFileSync(join(root, 'docs/release-notes.md'), '# v-9.9.9\n');
+    assert.ok(checkVersions(root).failures.some(value => value.includes('release notes')));
+    writeFileSync(join(root, 'docs/release-notes.md'), '# v-0.1.0\n');
+    writeFileSync(join(root, '.container/release.json'), JSON.stringify({ version:'9.9.9', tag:'v-9.9.9' }));
+    assert.ok(checkVersions(root).failures.some(value => value.includes('Release metadata version')));
+    assert.ok(checkVersions(root).failures.some(value => value.includes('Release metadata tag')));
+    writeFileSync(join(root, '.container/release.json'), JSON.stringify({version:'0.1.0', tag:'v-0.1.0'}));
+    const lock = readFileSync(join(root, 'package-lock.json'), 'utf8');
+    writeFileSync(join(root, 'package-lock.json'), lock.replaceAll('0.1.0', '9.9.9'));
+    assert.ok(checkVersions(root).failures.some(value => value.includes('Package-lock root')));
+    writeFileSync(join(root, 'package-lock.json'), lock);
+    bumpNextVersion(root, 'Fixture status bump', {databaseUpdate:false});
+    assert.ok(checkVersions(root).failures.some(value => value.includes('release notes')));
+    writeFileSync(join(root, 'docs/release-notes.md'), '# v-0.1.1\n');
+    writeFileSync(join(root, '.container/release.json'), JSON.stringify({version:'0.1.1', tag:'v-0.1.1', dependencies:[{version:'9.9.9'}]}));
+    assert.deepEqual(checkVersions(root).failures, []);
+    assert.equal(readFileSync(join(root, 'src/web/app-shell.ts'), 'utf8'), shell, 'a package bump does not require a repeated frontend literal');
+    assert.match(readFileSync(join(root, 'docs/CHANGELOG.md'), 'utf8'), /Initial baseline/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});

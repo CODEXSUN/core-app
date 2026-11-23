@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.11
+Current version: 0.1.12
 
-Release tag: v-0.1.11
+Release tag: v-0.1.12
 
-Changelog label: v 0.1.11
+Changelog label: v 0.1.12
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.12
+
+### [v 0.1.12] 2026-11-23 - Show running app identity in the status bar and detect metadata drift
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.12.
+- Display the canonical app title and running package version in the shared bottom-right status slot. Audit current package/lock/changelog/release/frontend bindings and reject drift without changing historical or dependency versions.
 
 ## v-0.1.11
 

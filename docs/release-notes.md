@@ -1,4 +1,10 @@
-# v-0.1.11
+# v-0.1.12
+
+The shared bottom-right status bar displays Core - V0.1.12 from the running frontend's root package manifest and canonical display title. Existing version checks now reject drift in current package/lock/latest changelog, release mirrors and frontend status binding; historical and independent dependency/API/schema versions are excluded.
+
+No authentication, permissions, dependency pins or deployment changes. Verification is recorded in work-record.md.
+
+## Earlier cleanup notes
 
 Consolidate published Core histories into main while preserving historical deployment records and native checkpoints. Wire app-owned branded startup/session/lazy/reference loading through published shared UI, and the existing public Zetro sidecar. Core business API, identity policy, grants and 40 migrations are unchanged.
 

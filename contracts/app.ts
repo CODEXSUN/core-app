@@ -1,5 +1,6 @@
 export const appDetails = {
   name: "core-app",
+  title: "Core",
   purpose:
     "Shared company, financial year and contact master data for business apps",
   prefix: "CORE_APP",

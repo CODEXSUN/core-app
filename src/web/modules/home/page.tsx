@@ -17,7 +17,7 @@ import {
 } from "@workspace/ui";
 import { AsyncState, ContentBoundary } from "@workspace/ui/blocks/async-state";
 import { MainLayout } from "@workspace/ui/layouts/main-layout";
-import { appBrand, appVersion } from "../../app-shell";
+import { appBrand, appVersionLabel } from "../../app-shell";
 import { NavigationProvider, useNavigation } from "../../navigation";
 import {
   getSession,
@@ -464,7 +464,7 @@ function Workspace() {
           : []),
       ]}
       statusLabel={session ? "Connected" : "Not connected"}
-      versionLabel={"v " + appVersion}
+      versionLabel={appVersionLabel}
     >
       <main className={module && tail.length === 1 ? "workspace-list-content space-y-5" : "w-full min-w-0 space-y-5 p-4 sm:p-6 lg:p-10"}>
         <h1 className="sr-only">{label}</h1>
