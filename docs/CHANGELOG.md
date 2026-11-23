@@ -2,13 +2,26 @@
 
 ## Version State
 
-Current version: 0.1.10
+Current version: 0.1.11
 
-Release tag: v-0.1.10
+Release tag: v-0.1.11
 
-Changelog label: v 0.1.10
+Changelog label: v 0.1.11
 
 Versions reflect independently tagged Core releases. The legacy contact port does not migrate Core's PostgreSQL database.
+
+## v-0.1.11
+
+### [v 0.1.11] 2026-11-23 - Consolidate published Core history and branded shared loading
+
+#### Database Changes
+
+- Database update: No (manual).
+
+#### App Codebase Changes
+
+- Bumped @workspace/core-app version to 0.1.11.
+- Consolidate published 0.1.8–0.1.10 history into main, preserve native checkpoints, and wire shared branded bootstrap/session/reference loading using published UI 0.1.26.
 
 ## v-0.1.10
 

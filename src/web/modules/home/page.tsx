@@ -1,3 +1,4 @@
+import { zetroSidecar } from '@workspace/sdk/zetro-sidecar';
 import {useWorkspaceAuth} from '../../platform';
 import {
   lazy,
@@ -310,7 +311,7 @@ function Workspace() {
   const canWrite =
     session?.permissions.includes(permission + ":write") ?? false;
   return (
-    <MainLayout
+    <MainLayout assistant={zetroSidecar('core-app', import.meta.env.VITE_ZETRO_ORIGIN || 'http://127.0.0.1:14405')}
       className="w-full min-w-0"
       onLogout={()=>void identity?.logout()} applicationName="Core"
       companyBrand={{...appBrand,name:identity?.session.tenant?.name??appBrand.name}}
